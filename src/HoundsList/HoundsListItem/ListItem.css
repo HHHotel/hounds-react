@@ -1,3 +1,9 @@
+.event-text {
+    margin-right: .5rem !important;
+    text-indent: -0.5rem;
+    margin-left: 1rem !important;
+}
+
 .arriving {
     color: blue;
 }

@@ -3,6 +3,8 @@ import React from "react";
 import "./ListItem.css";
 
 import {Typography} from "@material-ui/core";
+// eslint-disable-next-line
+import {Theme} from "@material-ui/core";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
@@ -16,8 +18,9 @@ interface IListItemProps {
  * @return {React.Node} React element to render
  */
 function ListItem(props:any) {
+    const classes = `event-text ${props.sevent.type}`;
     // eslint-disable-next-line
-    return <Typography className={props.sevent.type}>
+    return <Typography className={classes}>
         {getEventText(props.sevent)}
     </Typography>
     ;

@@ -4,7 +4,12 @@ import HoundsList from "./HoundsList/HoundsList";
 import * as serviceWorker from "./serviceWorker";
 import "./index.css";
 
-ReactDOM.render(<HoundsList />, document.getElementById("root"));
+const weekStart = new Date("3/2/2020");
+
+ReactDOM.render(
+    <HoundsList weekStart={weekStart}/>,
+    document.getElementById("root"),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,11 +1,6 @@
 import React from "react";
-import {
-    addDays,
-    format,
-    eachDayOfInterval,
-} from "date-fns";
-
-import ListItem from "./HoundsListItem/ListItem";
+import {format} from "date-fns";
+import ListItem from "./item/ListItem";
 import {
     Card,
     Grid,
@@ -42,11 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
             marginBottom: theme.spacing(1),
             height: "100%",
         },
-    }));
-
+    }),
+);
 
 interface IHoundsListProps {
-    weekStart: Date,
+    dates: Date[],
+    weekList: api.IScheduleEvent[][],
 }
 
 /**
@@ -54,27 +50,11 @@ interface IHoundsListProps {
  * @return {React.Node} react element to render
  */
 function HoundsList(props: IHoundsListProps) {
-    const end = addDays(props.weekStart, 7);
-    const dates = eachDayOfInterval({
-        start: props.weekStart,
-        end,
-    });
-
     const classes = useStyles();
-    // eslint-disable-next-line
-    function convertJsonEvent(event: any) : api.IHoundBooking {
-        if (event.startDate) {
-            return api.fromApiBooking(event);
-        } else {
-            return event;
-        }
-    }
-
-    const weekList = week.map(
-        (day: any) => day.map(convertJsonEvent)
-            .sort(api.compareScheduleEvents)
+    const weekList = props.weekList
+        .map((day: any) => day.sort(api.compareScheduleEvents)
             .map((ev: any) => <ListItem sevent={ev} key={ev.id}/>),
-    );
+        );
 
     return (
         <Grid container
@@ -82,14 +62,11 @@ function HoundsList(props: IHoundsListProps) {
             direction="row"
             wrap="wrap">
             {
-                weekList.map(
-                    (el, index) =>
-                        (
-                            <DayCard key={index}
-                                el={el}
-                                date={dates[index]}/>
-                        ),
-                )
+                weekList.map((el, index) => (
+                    <DayCard key={index}
+                        el={el}
+                        date={props.dates[index]}/>
+                ))
             }
         </Grid>
     );
@@ -124,4 +101,18 @@ function DayCard(props: IDayCardProps) {
                 {props.el}
             </Card>
         </Grid>);
+}
+
+// eslint-disable-next-line
+function getWeek(): api.IScheduleEvent[][] {
+    // eslint-disable-next-line
+    function convertJsonEvent(event: any) : api.IScheduleEvent {
+        if (event.startDate) {
+            return api.fromApiBooking(event);
+        } else {
+            return event;
+        }
+    }
+
+    return week.map((day) => day.map(convertJsonEvent));
 }

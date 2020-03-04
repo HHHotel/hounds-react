@@ -2,6 +2,7 @@ import React from "react";
 // eslint-disable-next-line
 import {ReactElement} from "react";
 import {
+    Fab,
     AppBar,
     Toolbar,
     IconButton,
@@ -15,6 +16,7 @@ import {
 } from "@material-ui/core";
 import {
     Menu,
+    Add,
     ArrowLeft,
     ArrowRight,
     Home,
@@ -26,7 +28,8 @@ import {
 } from "date-fns";
 import HoundsList from "./houndslist/HoundsList";
 import HoundsSidebar from "./sidebar/HoundsSidebar";
-
+import DogForm from "./forms/DogForm";
+import {FormModal} from "./components";
 import {ApiConfig} from "..";
 
 import * as api from "@happyhoundhotel/hounds-ts";
@@ -34,6 +37,11 @@ import * as api from "@happyhoundhotel/hounds-ts";
 const useStyles = makeStyles((theme: Theme) => createStyles({
     sidebarHeader: {
         backgroundColor: theme.palette.primary.main,
+    },
+    addFab: {
+        position: "fixed",
+        right: theme.spacing(3),
+        bottom: theme.spacing(3),
     },
 }));
 
@@ -53,6 +61,14 @@ function HoundsWeek(props: WeekProps): ReactElement {
     const [dates, updateDates] = React.useState(getWeekArray(new Date()));
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
+
+    const [modalForm, setModalForm] = React.useState({
+        open: false,
+        formTitle: "New Dog",
+    });
+    const modalFormClose = () => setModalForm({...modalForm, open: false});
+    const modalFormOpen = () => setModalForm({...modalForm, open: true});
+
     const toggleDrawer = () => setDrawer(!drawerOpen);
 
     React.useEffect(() => {
@@ -88,7 +104,9 @@ function HoundsWeek(props: WeekProps): ReactElement {
     }
 
     return <>
-        <Drawer open={drawerOpen} onClose={() => toggleDrawer()} anchor="left">
+        <Drawer open={drawerOpen}
+            onClose={() => toggleDrawer()}
+            anchor="left">
             <HoundsSidebar onDateChange={goToWeek} logout={props.logout} />
         </Drawer>
         <AppBar position="sticky" color="default">
@@ -120,6 +138,15 @@ function HoundsWeek(props: WeekProps): ReactElement {
             </Toolbar>
         </AppBar>
         <HoundsList dates={dates} weekList={week}/>
+        <FormModal open={modalForm.open}
+            onClose={modalFormClose}
+            title={modalForm.formTitle}>
+            <DogForm onSubmit={modalFormClose} />
+        </FormModal>
+        <Fab color="primary" className={classes.addFab}
+            onClick={modalFormOpen}>
+            <Add />
+        </Fab>
     </>;
 }
 export default HoundsWeek;

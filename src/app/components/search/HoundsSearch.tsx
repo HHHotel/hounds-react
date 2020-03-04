@@ -102,6 +102,7 @@ export function HoundsSearch(props: SearchProps): React.ReactElement {
             </div>
             <InputBase value={searchText}
                 onChange={(ev) => updateSearch(ev.target.value)}
+                onKeyDown={(ev) => ev.key === "Enter" ? search() : null}
                 placeholder="Search…"
                 classes={{
                     root: classes.inputRoot,

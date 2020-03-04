@@ -14,7 +14,6 @@ import {Theme} from "@material-ui/core";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import week from "./week.json";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -101,18 +100,4 @@ function DayCard(props: IDayCardProps) {
                 {props.el}
             </Card>
         </Grid>);
-}
-
-// eslint-disable-next-line
-function getWeek(): api.IScheduleEvent[][] {
-    // eslint-disable-next-line
-    function convertJsonEvent(event: any) : api.IScheduleEvent {
-        if (event.startDate) {
-            return api.fromApiBooking(event);
-        } else {
-            return event;
-        }
-    }
-
-    return week.map((day) => day.map(convertJsonEvent));
 }

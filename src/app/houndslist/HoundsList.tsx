@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.primary.dark,
         },
         weekGrid: {
-            height: "90vh",
+            height: "90%",
         },
         weekGridChild: {
             marginBottom: theme.spacing(1),
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IHoundsListProps {
     dates: Date[],
     weekList: api.IScheduleEvent[][],
+    className?: string,
 }
 
 /**
@@ -55,7 +56,7 @@ function HoundsList(props: IHoundsListProps) {
             .map((ev: any) => <ListItem sevent={ev} key={ev.id}/>),
         );
 
-    return (
+    return <div className={props.className}>
         <Grid container
             className={classes.weekGrid}
             direction="row"
@@ -68,7 +69,7 @@ function HoundsList(props: IHoundsListProps) {
                 ))
             }
         </Grid>
-    );
+    </div>;
 }
 
 export default HoundsList;
@@ -81,7 +82,7 @@ interface IDayCardProps {
 // eslint-disable-next-line
 function DayCard(props: IDayCardProps) {
     const classes = useStyles();
-    return (
+    return <>
         <Grid className={classes.weekGridChild}
             item={true}
             xs={12}
@@ -99,5 +100,6 @@ function DayCard(props: IDayCardProps) {
                 </Paper>
                 {props.el}
             </Card>
-        </Grid>);
+        </Grid>
+    </>;
 }

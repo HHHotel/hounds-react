@@ -39,12 +39,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         "&:hover": {
             backgroundColor: fade(theme.palette.common.white, 0.25),
         },
-        "marginTop": theme.spacing(2),
-        "marginRight": theme.spacing(2),
-        "marginLeft": 0,
+        "margin": theme.spacing(1, 0),
         "width": "100%",
         [theme.breakpoints.up("sm")]: {
             marginLeft: theme.spacing(3),
+            marginRight: theme.spacing(3),
             width: "auto",
         },
     },
@@ -58,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         justifyContent: "center",
     },
     inputRoot: {
+        width: "100%",
         color: "inherit",
     },
     inputInput: {
@@ -70,19 +70,22 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     searchCard: {
         margin: theme.spacing(1),
         padding: theme.spacing(2),
+        width: "100%",
     },
 }));
 
 interface SearchProps {
+    filter?: (result: api.IHoundEvent | api.IHoundDog) => boolean
 }
 
 // eslint-disable-next-line
 export function HoundsSearch(props: SearchProps): React.ReactElement {
     const classes = useStyles();
     const [searchText, updateSearch] = React.useState("");
-    // eslint-disable-next-line
-    const [results, updateResults] = React.useState([] as any);
+    const resArr: Array<api.IHoundDog | api.IHoundEvent> = [];
+    const [results, updateResults] = React.useState(resArr);
     const apiConfig = React.useContext(ApiConfig);
+    const filter = props.filter ? props.filter : () => true;
 
     // eslint-disable-next-line
     function search() {
@@ -116,11 +119,14 @@ export function HoundsSearch(props: SearchProps): React.ReactElement {
             </Button>
         </Grid>
         <Grid container
+            className={classes.resultsContainer}
             direction="column">
             {
-                results.slice(0, 10).map((res: any, index: any) =>
-                    <ResultCard key={index} item={res}/>,
-                )
+                results.slice(0, 100)
+                    .filter(filter)
+                    .map((res: any, index: any) =>
+                        <ResultCard key={index} item={res}/>,
+                    )
             }
         </Grid>
     </>;

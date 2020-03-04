@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface SidebarProps {
     onDateChange?: (date: Date) => void
+    initDate?: Date
     logout: () => void
 }
 
@@ -61,7 +62,7 @@ function HoundsSidebar(props: SidebarProps) {
     // eslint-disable-next-line
     const apiConfig = React.useContext(ApiConfig);
     const classes = useStyles();
-    const [date, updateDate] = React.useState(new Date());
+    const [date, updateDate] = React.useState(props.initDate || new Date());
 
     const onDateChange = (udate: Date | null) => {
         if (props.onDateChange) {

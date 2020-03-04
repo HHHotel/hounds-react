@@ -34,6 +34,7 @@ import HoundsList from "./houndslist/HoundsList";
 import HoundsSidebar from "./sidebar/HoundsSidebar";
 import DogForm from "./forms/DogForm";
 import EventForm from "./forms/EventForm";
+import BookingForm from "./forms/BookingForm";
 import {FormModal} from "./components";
 import {ApiConfig} from "..";
 
@@ -48,6 +49,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         right: theme.spacing(3),
         bottom: theme.spacing(3),
     },
+    weekContainer: {
+        height: "calc(100vh - 4rem)",
+        overflowY: "scroll",
+    },
 }));
 
 const FormTypes = {
@@ -60,6 +65,11 @@ const FormTypes = {
         open: false,
         formTitle: "New Event",
         formEl: EventForm,
+    },
+    "booking": {
+        open: false,
+        formTitle: "New Booking",
+        formEl: BookingForm,
     },
 };
 
@@ -80,7 +90,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
 
-    const [modalForm, setModalForm] = React.useState(FormTypes["event"]);
+    const [modalForm, setModalForm] = React.useState(FormTypes["booking"]);
     const modalFormClose = () => setModalForm({...modalForm, open: false});
     const modalFormOpen = () => setModalForm({...modalForm, open: true});
 
@@ -122,7 +132,9 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <Drawer open={drawerOpen}
             onClose={() => toggleDrawer()}
             anchor="left">
-            <HoundsSidebar onDateChange={goToWeek} logout={props.logout} />
+            <HoundsSidebar initDate={dates[0]}
+                onDateChange={goToWeek}
+                logout={props.logout} />
         </Drawer>
         <AppBar position="sticky" color="default">
             <Toolbar>
@@ -152,7 +164,9 @@ function HoundsWeek(props: WeekProps): ReactElement {
                 </IconButton>
             </Toolbar>
         </AppBar>
-        <HoundsList dates={dates} weekList={week}/>
+        <HoundsList className={classes.weekContainer}
+            dates={dates}
+            weekList={week}/>
         <FormModal open={modalForm.open}
             onClose={modalFormClose}
             title={modalForm.formTitle}>

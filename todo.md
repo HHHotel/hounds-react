@@ -1,6 +1,8 @@
 # TODO List  
 
-[_] [1] "Events/Dogs forms" #UI #Backlog  
+[X] [1] "New Dogs form" #UI #Backlog  
+[X] [1] "New event form" #UI #Backlog  
+[_] [1] "Booking forms" #UI #Backlog  
 [_] [1] "Dog Profiles" #UI #Backlog  
 [_] [1] "User control" #UI #Backlog  
 [_] [1] "Admin Page" #UI #Backlog  

@@ -22,6 +22,10 @@ import {
     Home,
 } from "@material-ui/icons";
 import {
+    MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import {
     format,
     addDays,
     eachDayOfInterval,
@@ -29,6 +33,7 @@ import {
 import HoundsList from "./houndslist/HoundsList";
 import HoundsSidebar from "./sidebar/HoundsSidebar";
 import DogForm from "./forms/DogForm";
+import EventForm from "./forms/EventForm";
 import {FormModal} from "./components";
 import {ApiConfig} from "..";
 
@@ -44,6 +49,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         bottom: theme.spacing(3),
     },
 }));
+
+const FormTypes = {
+    "dog": {
+        open: false,
+        formTitle: "New Dog",
+        formEl: DogForm,
+    },
+    "event": {
+        open: false,
+        formTitle: "New Event",
+        formEl: EventForm,
+    },
+};
 
 interface WeekProps {
     logout: () => void
@@ -62,10 +80,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
 
-    const [modalForm, setModalForm] = React.useState({
-        open: false,
-        formTitle: "New Dog",
-    });
+    const [modalForm, setModalForm] = React.useState(FormTypes["event"]);
     const modalFormClose = () => setModalForm({...modalForm, open: false});
     const modalFormOpen = () => setModalForm({...modalForm, open: true});
 
@@ -103,7 +118,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
         });
     }
 
-    return <>
+    return <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Drawer open={drawerOpen}
             onClose={() => toggleDrawer()}
             anchor="left">
@@ -141,13 +156,13 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <FormModal open={modalForm.open}
             onClose={modalFormClose}
             title={modalForm.formTitle}>
-            <DogForm onSubmit={modalFormClose} />
+            { modalForm.formEl({onSubmit: modalFormClose}) }
         </FormModal>
         <Fab color="primary" className={classes.addFab}
             onClick={modalFormOpen}>
             <Add />
         </Fab>
-    </>;
+    </MuiPickersUtilsProvider>;
 }
 export default HoundsWeek;
 

@@ -22,9 +22,7 @@ import {
 
 import {
     Calendar,
-    MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
@@ -89,15 +87,13 @@ function HoundsSidebar(props: SidebarProps) {
                 <Settings />
             </IconButton>
         </Toolbar>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Container className={classes.sidebarCalender}>
-                <Calendar
-                    date={date}
-                    onChange={onDateChange}/>
-            </Container>
-            <Divider />
-            <HoundsSearch />
-        </MuiPickersUtilsProvider>
+        <Container className={classes.sidebarCalender}>
+            <Calendar
+                date={date}
+                onChange={onDateChange}/>
+        </Container>
+        <Divider />
+        <HoundsSearch />
     </>;
 }
 

@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 interface WeekProps {
+    logout: () => void
 }
 
 /**
@@ -88,7 +89,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
 
     return <>
         <Drawer open={drawerOpen} onClose={() => toggleDrawer()} anchor="left">
-            <HoundsSidebar onDateChange={goToWeek} />
+            <HoundsSidebar onDateChange={goToWeek} logout={props.logout} />
         </Drawer>
         <AppBar position="sticky" color="default">
             <Toolbar>

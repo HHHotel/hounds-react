@@ -55,24 +55,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-const FormTypes = {
-    "dog": {
-        open: false,
-        formTitle: "New Dog",
-        formEl: DogForm,
-    },
-    "event": {
-        open: false,
-        formTitle: "New Event",
-        formEl: EventForm,
-    },
-    "booking": {
-        open: false,
-        formTitle: "New Booking",
-        formEl: BookingForm,
-    },
-};
-
 interface WeekProps {
     logout: () => void
 }
@@ -90,8 +72,29 @@ function HoundsWeek(props: WeekProps): ReactElement {
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
 
-    const [modalForm, setModalForm] = React.useState(FormTypes["booking"]);
-    const modalFormClose = () => setModalForm({...modalForm, open: false});
+    const FORM_METADATA = {
+        "booking": {
+            title: "New Booking",
+            type: "booking",
+            open: false,
+        },
+        "dog": {
+            title: "New Dog",
+            type: "dog",
+            open: false,
+        },
+        "event": {
+            title: "New Event",
+            type: "event",
+            open: false,
+        },
+    };
+
+    const [modalForm, setModalForm] = React.useState(FORM_METADATA["booking"]);
+    const modalFormClose = () => setModalForm({
+        ...modalForm,
+        open: false,
+    });
     const modalFormOpen = () => setModalForm({...modalForm, open: true});
 
     const toggleDrawer = () => setDrawer(!drawerOpen);
@@ -167,16 +170,34 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <HoundsList className={classes.weekContainer}
             dates={dates}
             weekList={week}/>
-        <FormModal open={modalForm.open}
-            onClose={modalFormClose}
-            title={modalForm.formTitle}>
-            { modalForm.formEl({onSubmit: modalFormClose}) }
-        </FormModal>
+        <FormModals />
         <Fab color="primary" className={classes.addFab}
             onClick={modalFormOpen}>
             <Add />
         </Fab>
     </MuiPickersUtilsProvider>;
+
+    // eslint-disable-next-line
+    function FormModals() {
+        // eslint-disable-next-line
+        function GetTypedModal() {
+            switch (modalForm.type) {
+            case "booking":
+                return <BookingForm onSubmit={modalFormClose}/>;
+            case "dog":
+                return <DogForm onSubmit={modalFormClose}/>;
+            case "event":
+                return <EventForm onSubmit={modalFormClose}/>;
+            default:
+                return null;
+            }
+        }
+        return <FormModal open={modalForm.open}
+            onClose={modalFormClose}
+            title={modalForm.title}>
+            <GetTypedModal />
+        </FormModal>;
+    }
 }
 export default HoundsWeek;
 

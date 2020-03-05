@@ -56,7 +56,7 @@ function EventForm(props: EventFormProps) {
     const [start, setStart] = React.useState(null as any);
     const [end, setEnd] = React.useState(null as any);
     const [text, setText] = React.useState("");
-    const [type, setType] = React.useState("");
+    const [type, setType] = React.useState("general");
     const apiAuth = React.useContext(ApiConfig);
 
     const updateStart = (ustart: Date | null) => {
@@ -86,7 +86,7 @@ function EventForm(props: EventFormProps) {
         setStart(null);
         setEnd(null);
         setText("");
-        setType("");
+        setType("general");
         props.onSubmit();
     };
 
@@ -99,7 +99,6 @@ function EventForm(props: EventFormProps) {
             id="eventText"
             label="Event Text"
             name="eventText"
-            autoFocus
             value={text}
             onChange={(ev) => setText(ev.target.value)}
         />

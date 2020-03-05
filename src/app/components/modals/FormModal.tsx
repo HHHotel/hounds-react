@@ -20,7 +20,7 @@ import Draggable from "react-draggable";
 
 const useStyles = makeStyles((theme: Theme) => ({
     modalContainer: {
-        zIndex: 2,
+        zIndex: 1101,
         position: "fixed",
         padding: theme.spacing(5),
         right: theme.spacing(3),
@@ -28,12 +28,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down("sm")]: {
             width: "100%",
             height: "100%",
-            zIndex: 2000,
             left: theme.spacing(0),
             top: theme.spacing(0),
         },
         [theme.breakpoints.up("md")]: {
             width: "50%",
+        },
+        [theme.breakpoints.up("lg")]: {
+            width: "40%",
         },
     },
 }));
@@ -52,26 +54,38 @@ interface FormModalProps {
  */
 export function FormModal(props: FormModalProps) {
     const classes = useStyles();
+
+    const closeModal = (ev: MouseEvent) => {
+        if (props.onClose) {
+            props.onClose(ev);
+        }
+    };
+
     // eslint-disable-next-line
     const [draggable, setDrag] = React.useState(!props.disableDrag);
-    return <> { props.open &&
-        <Draggable disabled={!draggable}
-            bounds="parent">
-            <Paper className={classes.modalContainer}
-                elevation={8}>
+
+    if (!props.open) {
+        return null;
+    }
+
+    return <Draggable disabled={!draggable}
+        bounds="parent">
+        <Paper className={classes.modalContainer}
+            elevation={8}>
+            <Grid container>
                 <Grid container
                     justify="space-between">
                     <Typography variant="h5">
                         { props.title || "" }
                     </Typography>
-                    <IconButton onClick={props.onClose}>
+                    <IconButton onClick={closeModal}>
                         <Close />
                     </IconButton>
                 </Grid>
-                <Grid container>
+                <>
                     { props.children }
-                </Grid>
-            </Paper>
-        </Draggable>
-    }</>;
+                </>
+            </Grid>
+        </Paper>
+    </Draggable>;
 }

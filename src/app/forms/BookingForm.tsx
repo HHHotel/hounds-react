@@ -96,7 +96,14 @@ function BookingForm(props: BookingFormProps) {
             return;
         }
         if (!repeat) { // one event just call the api and exit
-            api.addEvent(ev, apiAuth);
+            api.addEvent({
+                ...booking,
+                ...ev,
+            }, apiAuth);
+            console.log({
+                ...booking,
+                ...ev,
+            });
             props.onSubmit();
             return;
         }

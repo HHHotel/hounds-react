@@ -83,6 +83,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 interface SearchProps {
+    style?: React.CSSProperties,
     onSelect?: (result: api.IHoundEvent | api.IHoundDog) => void
     filter?: (result: api.IHoundEvent | api.IHoundDog) => boolean
 }
@@ -104,7 +105,7 @@ export function HoundsSearch(props: SearchProps): React.ReactElement {
         });
     }
 
-    return <div className={classes.searchContainer}>
+    return <div className={classes.searchContainer} style={props.style}>
         <Grid className={classes.search}
             container
             wrap="nowrap"

@@ -12,10 +12,14 @@ import {
     makeStyles,
     createStyles,
     // eslint-disable-next-line
+    Menu,
+    // eslint-disable-next-line
+    MenuItem,
+    // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
 import {
-    Menu,
+    Menu as MenuIcon,
     Add,
     ArrowLeft,
     ArrowRight,
@@ -95,7 +99,13 @@ function HoundsWeek(props: WeekProps): ReactElement {
         ...modalForm,
         open: false,
     });
-    const modalFormOpen = () => setModalForm({...modalForm, open: true});
+    const modalFormOpen = (type?: "booking" | "dog" | "event") => {
+        if (type) {
+            setModalForm({...FORM_METADATA[type], open: true});
+        } else {
+            setModalForm({...modalForm, open: true});
+        }
+    };
 
     const toggleDrawer = () => setDrawer(!drawerOpen);
 
@@ -142,7 +152,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <AppBar position="sticky" color="default">
             <Toolbar>
                 <IconButton onClick={() => toggleDrawer()} edge="start">
-                    <Menu/>
+                    <MenuIcon />
                 </IconButton>
                 <Grid container
                     alignContent="center"
@@ -170,11 +180,8 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <HoundsList className={classes.weekContainer}
             dates={dates}
             weekList={week}/>
+        <AddMenu openModal={modalFormOpen}/>
         <FormModals />
-        <Fab color="primary" className={classes.addFab}
-            onClick={modalFormOpen}>
-            <Add />
-        </Fab>
     </MuiPickersUtilsProvider>;
 
     // eslint-disable-next-line
@@ -192,7 +199,8 @@ function HoundsWeek(props: WeekProps): ReactElement {
                 return null;
             }
         }
-        return <FormModal open={modalForm.open}
+        return <FormModal disableDrag={true}
+            open={modalForm.open}
             onClose={modalFormClose}
             title={modalForm.title}>
             <GetTypedModal />
@@ -201,4 +209,36 @@ function HoundsWeek(props: WeekProps): ReactElement {
 }
 export default HoundsWeek;
 
+
+// eslint-disable-next-line
+function AddMenu({openModal}: any) {
+    const classes = useStyles();
+    // eslint-disable-next-line
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    // eslint-disable-next-line
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    return <div>
+        <Fab color="primary" className={classes.addFab}
+            onClick={handleClick}>
+            <Add />
+        </Fab>
+        <Menu anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClick={handleClose}
+            onClose={handleClose}>
+            <MenuItem onClick={() => openModal("booking")}>Booking</MenuItem>
+            <MenuItem onClick={() => openModal("event")}>Event</MenuItem>
+            <MenuItem onClick={() => openModal("dog")}>Dog</MenuItem>
+        </Menu>
+    </div>;
+}
 

@@ -94,7 +94,7 @@ function HoundsSidebar(props: SidebarProps) {
                 onChange={onDateChange}/>
         </Container>
         <Divider />
-        <HoundsSearch />
+        <HoundsSearch style={{height: "100%"}}/>
     </>;
 }
 

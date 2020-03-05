@@ -68,8 +68,7 @@ export function FormModal(props: FormModalProps) {
         return null;
     }
 
-    return <Draggable disabled={!draggable}
-        bounds="parent">
+    return <Draggable disabled={!draggable} bounds="parent">
         <Paper className={classes.modalContainer}
             elevation={8}>
             <Grid container>

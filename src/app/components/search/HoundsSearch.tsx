@@ -25,7 +25,7 @@ import {
     format,
 } from "date-fns";
 
-import {ApiConfig} from "../../..";
+import {ApiContext} from "../../..";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
@@ -94,7 +94,7 @@ export function HoundsSearch(props: SearchProps): React.ReactElement {
     const [searchText, updateSearch] = React.useState("");
     const resArr: Array<api.IHoundDog | api.IHoundEvent> = [];
     const [results, updateResults] = React.useState(resArr);
-    const apiConfig = React.useContext(ApiConfig);
+    const apiConfig = React.useContext(ApiContext);
     const filter = props.filter ? props.filter : () => true;
 
     // eslint-disable-next-line

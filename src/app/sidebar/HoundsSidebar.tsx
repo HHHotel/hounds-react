@@ -28,7 +28,7 @@ import {
 import * as api from "@happyhoundhotel/hounds-ts";
 
 import {HoundsSearch} from "../components";
-import {ApiConfig} from "../..";
+import {ApiContext} from "../..";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     sidebarCalender: {
@@ -60,7 +60,7 @@ interface SidebarProps {
  */
 function HoundsSidebar(props: SidebarProps) {
     // eslint-disable-next-line
-    const apiConfig = React.useContext(ApiConfig);
+    const apiConfig = React.useContext(ApiContext);
     const classes = useStyles();
     const [date, updateDate] = React.useState(props.initDate || new Date());
 

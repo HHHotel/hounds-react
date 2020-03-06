@@ -23,7 +23,7 @@ import {
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
 
-import {ApiConfig} from "../..";
+import {ApiContext} from "../..";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -57,7 +57,7 @@ function EventForm(props: EventFormProps) {
     const [end, setEnd] = React.useState(null as any);
     const [text, setText] = React.useState("");
     const [type, setType] = React.useState("general");
-    const apiAuth = React.useContext(ApiConfig);
+    const apiAuth = React.useContext(ApiContext);
 
     const updateStart = (ustart: Date | null) => {
         if (!ustart) {

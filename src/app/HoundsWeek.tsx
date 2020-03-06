@@ -34,13 +34,15 @@ import {
     addDays,
     eachDayOfInterval,
 } from "date-fns";
+// eslint-disable-next-line
 import HoundsList from "./houndslist/HoundsList";
+import Profile from "./houndsprofile/Profile";
 import HoundsSidebar from "./sidebar/HoundsSidebar";
 import DogForm from "./forms/DogForm";
 import EventForm from "./forms/EventForm";
 import BookingForm from "./forms/BookingForm";
 import {FormModal} from "./components";
-import {ApiConfig} from "..";
+import {ApiContext} from "..";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 
@@ -70,9 +72,10 @@ interface WeekProps {
 function HoundsWeek(props: WeekProps): ReactElement {
     // eslint-disable-next-line
     const classes = useStyles();
-    const apiConfig = React.useContext(ApiConfig);
+    const apiConfig = React.useContext(ApiContext);
 
     const [dates, updateDates] = React.useState(getWeekArray(new Date()));
+    // eslint-disable-next-line
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
 
@@ -177,9 +180,12 @@ function HoundsWeek(props: WeekProps): ReactElement {
                 </IconButton>
             </Toolbar>
         </AppBar>
+        {/*
         <HoundsList className={classes.weekContainer}
             dates={dates}
             weekList={week}/>
+          */}
+        <Profile dogId={"98354372299209997"} />
         <AddMenu openModal={modalFormOpen}/>
         <FormModals />
     </MuiPickersUtilsProvider>;

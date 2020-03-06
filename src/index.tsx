@@ -11,7 +11,7 @@ import {HoundsSettings} from "./util/settings/SettingsProvider";
 import {WebSettings} from "./util/settings/WebSettingsProvider";
 import HoundsLogin from "./app/Login";
 
-export const ApiConfig = React.createContext({} as api.IHoundsConfig);
+export const ApiContext = React.createContext({} as api.IHoundsConfig);
 
 const settingsProvider = new WebSettings();
 const settings = settingsProvider.load();
@@ -64,9 +64,9 @@ function renderLogin() {
 // eslint-disable-next-line
 function renderWeek(apiConfig: api.IHoundsConfig) {
     ReactDOM.render(
-        <ApiConfig.Provider value={apiConfig}>
+        <ApiContext.Provider value={apiConfig}>
             <HoundsWeek logout={logout} />
-        </ApiConfig.Provider>,
+        </ApiContext.Provider>,
         document.getElementById("root"),
     );
 }

@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface SidebarProps {
     onDateChange?: (date: Date) => void
+    onLookup?: (id: string) => void
     initDate?: Date
     logout: () => void
 }
@@ -94,7 +95,17 @@ function HoundsSidebar(props: SidebarProps) {
                 onChange={onDateChange}/>
         </Container>
         <Divider />
-        <HoundsSearch style={{height: "100%"}}/>
+        <HoundsSearch onSelect={ (item: any) => {
+            if (!item.name) {
+                return;
+            }
+            if (!props.onLookup) {
+                return;
+            }
+
+            props.onLookup(item.id);
+        }}
+        style={{height: "100%"}}/>
     </>;
 }
 

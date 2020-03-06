@@ -78,6 +78,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
     // eslint-disable-next-line
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
     const [drawerOpen, setDrawer] = React.useState(false);
+    const [profileId, setProfileId] = React.useState("");
 
     const FORM_METADATA = {
         "booking": {
@@ -148,9 +149,13 @@ function HoundsWeek(props: WeekProps): ReactElement {
         <Drawer open={drawerOpen}
             onClose={() => toggleDrawer()}
             anchor="left">
-            <HoundsSidebar initDate={dates[0]}
-                onDateChange={goToWeek}
-                logout={props.logout} />
+            <HoundsSidebar onLookup={(id) => {
+                setProfileId(id);
+                setDrawer(false);
+            }}
+            initDate={dates[0]}
+            onDateChange={goToWeek}
+            logout={props.logout} />
         </Drawer>
         <AppBar position="sticky" color="default">
             <Toolbar>
@@ -180,12 +185,11 @@ function HoundsWeek(props: WeekProps): ReactElement {
                 </IconButton>
             </Toolbar>
         </AppBar>
-        {/*
-        <HoundsList className={classes.weekContainer}
+        <> { !profileId && <HoundsList className={classes.weekContainer}
             dates={dates}
-            weekList={week}/>
-          */}
-        <Profile dogId={"98354372299209997"} />
+            weekList={week}/> }
+        { profileId && <Profile dogId={profileId} /> }
+        </>
         <AddMenu openModal={modalFormOpen}/>
         <FormModals />
     </MuiPickersUtilsProvider>;

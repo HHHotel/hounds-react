@@ -28,7 +28,7 @@ import {
 import * as api from "@happyhoundhotel/hounds-ts";
 
 import {HoundsSearch} from "../components";
-import {ApiConfig} from "../..";
+import {ApiContext} from "../..";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     sidebarCalender: {
@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface SidebarProps {
     onDateChange?: (date: Date) => void
+    onLookup?: (id: string) => void
     initDate?: Date
     logout: () => void
 }
@@ -60,7 +61,7 @@ interface SidebarProps {
  */
 function HoundsSidebar(props: SidebarProps) {
     // eslint-disable-next-line
-    const apiConfig = React.useContext(ApiConfig);
+    const apiConfig = React.useContext(ApiContext);
     const classes = useStyles();
     const [date, updateDate] = React.useState(props.initDate || new Date());
 
@@ -94,7 +95,17 @@ function HoundsSidebar(props: SidebarProps) {
                 onChange={onDateChange}/>
         </Container>
         <Divider />
-        <HoundsSearch style={{height: "100%"}}/>
+        <HoundsSearch onSelect={ (item: any) => {
+            if (!item.name) {
+                return;
+            }
+            if (!props.onLookup) {
+                return;
+            }
+
+            props.onLookup(item.id);
+        }}
+        style={{height: "100%"}}/>
     </>;
 }
 

@@ -13,7 +13,7 @@ import HoundsLogin from "./app/Login";
 import Page, {PageRoute} from "./util/Page";
 import SettingsPage from "./app/settings/SettingsPage";
 
-export const ApiConfig = React.createContext({} as api.IHoundsConfig);
+export const ApiContext = React.createContext({} as api.IHoundsConfig);
 
 const settingsProvider = new WebSettings();
 const settings: HoundsSettings = settingsProvider.load();

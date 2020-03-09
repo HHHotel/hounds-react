@@ -37,7 +37,7 @@ import {
 import * as api from "@happyhoundhotel/hounds-ts";
 import {HoundsSearch} from "../components";
 
-import {ApiConfig} from "../..";
+import {ApiContext} from "../..";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -70,7 +70,7 @@ function BookingForm(props: BookingFormProps) {
 
     const [formIndex, setFormIndex] = React.useState(0);
     const [booking, setBooking] = React.useState({} as api.IHoundEvent);
-    const apiAuth = React.useContext(ApiConfig);
+    const apiAuth = React.useContext(ApiContext);
 
     const onSelectDog = (dog: api.IHoundDog | api.IHoundEvent) => {
         dog = dog as api.IHoundDog;

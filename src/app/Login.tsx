@@ -11,10 +11,12 @@ import {
     FormControlLabel,
     Checkbox,
     Button,
+    IconButton,
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
 import {
+    Settings,
     LockOutlined,
 } from "@material-ui/icons";
 import {
@@ -150,6 +152,9 @@ function HoundsLogin(props: LoginProps): ReactElement {
                     </Grid>
                 </form>
             </div>
+            <IconButton>
+                <Settings />
+            </IconButton>
         </Container>
     </>;
 }

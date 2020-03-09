@@ -30,7 +30,7 @@ function logout() {
 }
 
 const apiConfig = {
-    apiURL: settings.apiUrl,
+    apiURL: "https://hhh-scheduler-testing.herokuapp.com",
     apiVersion: "0.3.4",
     apiAuth: settings.auth,
 };

@@ -15,16 +15,22 @@ import {Theme} from "@material-ui/core";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+    return createStyles({
         dayCard: {
             margin: 5,
             height: "100%",
+        },
+        dayList: {
+            overflowY: "scroll",
+            height: "calc(100% - 2rem)",
+            marginBottom: "1rem",
         },
         dayHeading: {
             margin: theme.spacing(0),
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
+            height: "2rem",
             width: "100%",
             color: theme.palette.primary.contrastText,
             backgroundColor: theme.palette.primary.dark,
@@ -36,8 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
             marginBottom: theme.spacing(1),
             height: "100%",
         },
-    }),
-);
+    });
+});
 
 interface IHoundsListProps {
     dates: Date[],
@@ -75,7 +81,7 @@ function HoundsList(props: IHoundsListProps) {
 export default HoundsList;
 
 interface IDayCardProps {
-    el: any,
+    el: React.ReactElement,
     date: Date,
 }
 
@@ -98,7 +104,11 @@ function DayCard(props: IDayCardProps) {
                         {format(props.date, "E dd")}
                     </Typography>
                 </Paper>
-                {props.el}
+                <Grid className={classes.dayList} container
+                    wrap="nowrap"
+                    direction="column">
+                    {props.el}
+                </Grid>
             </Card>
         </Grid>
     </>;

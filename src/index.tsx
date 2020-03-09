@@ -10,11 +10,13 @@ import * as api from "@happyhoundhotel/hounds-ts";
 import {HoundsSettings} from "./util/settings/SettingsProvider";
 import {WebSettings} from "./util/settings/WebSettingsProvider";
 import HoundsLogin from "./app/Login";
+import Page, {PageRoute} from "./util/Page";
+import SettingsPage from "./app/settings/SettingsPage";
 
 export const ApiConfig = React.createContext({} as api.IHoundsConfig);
 
 const settingsProvider = new WebSettings();
-const settings = settingsProvider.load();
+const settings: HoundsSettings = settingsProvider.load();
 
 // eslint-disable-next-line
 function logout() {
@@ -26,51 +28,33 @@ function logout() {
         },
     });
 
-    renderLogin();
+    window.location.pathname = "/login";
 }
 
 const apiConfig = {
-    apiURL: "https://hhh-scheduler-testing.herokuapp.com",
+    apiURL: settings.apiUrl,
     apiVersion: "0.3.4",
     apiAuth: settings.auth,
 };
 
-api.checkAuthentication(apiConfig).then((success) => {
-    if (success) {
-        renderWeek(apiConfig);
-    } else {
-        renderLogin();
-    }
-});
-
-// eslint-disable-next-line
-function renderLogin() {
-    ReactDOM.render(
-        <HoundsLogin onLogin={(auth, saveUser) => {
-            if (saveUser) {
-                settingsProvider.save({
-                    ...settings,
-                    auth,
-                });
-            }
-            renderWeek({...apiConfig, apiAuth: auth});
-        }}
-        settings={settings}
-        />,
-        document.getElementById("root"),
-    );
-}
-
-// eslint-disable-next-line
-function renderWeek(apiConfig: api.IHoundsConfig) {
-    ReactDOM.render(
+ReactDOM.render(<Page>
+    <PageRoute path="/settings">
+        <SettingsPage settingsProvider={settingsProvider}/>
+    </PageRoute>
+    <PageRoute path="/week">
         <ApiConfig.Provider value={apiConfig}>
             <HoundsWeek logout={logout} />
-        </ApiConfig.Provider>,
-        document.getElementById("root"),
-    );
-}
-
+        </ApiConfig.Provider>
+    </PageRoute>
+    <PageRoute path="/login">
+        <HoundsLogin onLogin={(auth, saveUser) => {
+            settingsProvider.save({...settings, auth});
+            window.location.pathname = "/week";
+        }}
+        settings={settings}/>
+    </PageRoute>
+</Page>,
+document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -143,18 +143,24 @@ function HoundsLogin(props: LoginProps): ReactElement {
                     >
             Sign In
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
+                    <Grid container
+                        alignItems="center">
+                        <Grid item>
                             <Link href="#" variant="body2">
                 Forgot password?
                             </Link>
                         </Grid>
+
+                        <Grid item>
+                            <IconButton
+                                onClick={() =>
+                                    window.location.pathname = "/settings"}>
+                                <Settings />
+                            </IconButton>
+                        </Grid>
                     </Grid>
                 </form>
             </div>
-            <IconButton>
-                <Settings />
-            </IconButton>
         </Container>
     </>;
 }

@@ -115,9 +115,14 @@ function HoundsWeek(props: WeekProps): ReactElement {
 
     // eslint-disable-next-line
     async function getWeek(d0: Date) {
-        const week = await api.getWeek(d0, apiConfig);
-        updateWeek(week);
-        console.log("Loaded week", d0.toDateString());
+        try {
+            const week = await api.getWeek(d0, apiConfig);
+            updateWeek(week);
+            console.log("Loaded week", d0.toDateString());
+        } catch (er) {
+            console.log(d0, apiConfig);
+            console.error(er);
+        }
     }
 
     // eslint-disable-next-line

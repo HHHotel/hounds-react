@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginLeft: theme.spacing(0),
         color: theme.palette.grey.A400,
     },
+    fullWidth: {
+        width: "100%",
+    },
 }));
 
 interface SidebarProps {
@@ -84,7 +87,7 @@ function HoundsSidebar(props: SidebarProps) {
             <Typography className={classes.avatarLabel} variant="h6">
                 {apiConfig.apiAuth.username}
             </Typography>
-            <div style={{width: "100%"}}/>
+            <div className={classes.fullWidth} />
             <IconButton edge="end"className={classes.settingsButton}>
                 <Settings />
             </IconButton>
@@ -102,10 +105,8 @@ function HoundsSidebar(props: SidebarProps) {
             if (!props.onLookup) {
                 return;
             }
-
             props.onLookup(item.id);
-        }}
-        style={{height: "100%"}}/>
+        }} />
     </>;
 }
 

@@ -26,5 +26,9 @@ module.exports = {
     "rules": {
         "quotes": ["error", "double"],
         "indent": ["warn", 4],
+        "valid-jsdoc": ["error", {
+            "requireParamType": false,
+            "requireReturnType": false,
+        }],
     }
 };

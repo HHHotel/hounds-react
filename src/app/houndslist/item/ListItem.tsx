@@ -1,13 +1,11 @@
-// eslint-disable-next-line
 import React from "react";
-import "./ListItem.css";
 
 import {Typography} from "@material-ui/core";
 // eslint-disable-next-line
 import {Theme} from "@material-ui/core";
 
-// eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
+import "./ListItem.css";
 
 interface IListItemProps {
     sevent: api.IHoundBooking
@@ -19,25 +17,21 @@ interface IListItemProps {
  */
 function ListItem(props:any) {
     const classes = `event-text ${props.sevent.type}`;
-    // eslint-disable-next-line
     return <Typography className={classes}>
         {getEventText(props.sevent)}
-    </Typography>
-    ;
+    </Typography>;
 }
 
-// eslint-disable-next-line
-function getEventText(sevent: api.IHoundAPIBooking) {
+/**
+ * @param {api.IScheduleEvent} sevent
+ * @return {string} event text
+ */
+function getEventText(sevent: api.IScheduleEvent) {
     if (!sevent.startDate) {
         return sevent.text;
     }
-    const event = {
-        ...sevent,
-        startDate: new Date(sevent.startDate),
-        endDate: new Date(sevent.endDate),
-    };
-    const prepend = event.startDate && api.getTimePrepend(event);
-    return `${prepend} ${event.text}`;
+    const prepend = sevent.startDate && api.getTimePrepend(sevent);
+    return `${prepend} ${sevent.text}`;
 }
 
 export default ListItem;

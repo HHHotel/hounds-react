@@ -1,10 +1,4 @@
 import React from "react";
-
-import {
-    // eslint-disable-next-line
-    FormEvent,
-} from "react";
-
 import {
     FormControl,
     Grid,
@@ -20,9 +14,7 @@ import {
     DateTimePicker,
 } from "@material-ui/pickers";
 
-// eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-
 import {ApiContext} from "../..";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -72,7 +64,7 @@ function EventForm(props: EventFormProps) {
         setEnd(uend as any as Date);
     };
 
-    const onSubmit = (event: FormEvent) => {
+    const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
 
         api.addEvent({

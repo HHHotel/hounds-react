@@ -18,8 +18,13 @@ export const ApiContext = React.createContext({} as api.IHoundsConfig);
 const settingsProvider = new WebSettings();
 const settings: HoundsSettings = settingsProvider.load();
 
-// eslint-disable-next-line
-function logout() {
+const paths = {
+    settings: "/settings",
+    week: "/",
+    login: "/login",
+};
+
+const logout = () => {
     settingsProvider.save({
         ...settings,
         auth: {
@@ -27,9 +32,15 @@ function logout() {
             token: "",
         },
     });
+    window.location.pathname = paths.login;
+};
 
-    window.location.pathname = "/login";
-}
+const login = (auth: api.IHoundAuth, saveUser?: boolean) => {
+    if (saveUser) {
+        settingsProvider.save({...settings, auth});
+    }
+    window.location.pathname = paths.week;
+};
 
 const apiConfig = {
     apiURL: settings.apiUrl,
@@ -38,20 +49,16 @@ const apiConfig = {
 };
 
 ReactDOM.render(<Page>
-    <PageRoute path="/settings">
+    <PageRoute path={paths.settings}>
         <SettingsPage settingsProvider={settingsProvider}/>
     </PageRoute>
-    <PageRoute path="/week">
-        <ApiConfig.Provider value={apiConfig}>
+    <PageRoute path={paths.week}>
+        <ApiContext.Provider value={apiConfig}>
             <HoundsWeek logout={logout} />
-        </ApiConfig.Provider>
+        </ApiContext.Provider>
     </PageRoute>
-    <PageRoute path="/login">
-        <HoundsLogin onLogin={(auth, saveUser) => {
-            settingsProvider.save({...settings, auth});
-            window.location.pathname = "/week";
-        }}
-        settings={settings}/>
+    <PageRoute path={paths.login}>
+        <HoundsLogin onLogin={login} settings={settings}/>
     </PageRoute>
 </Page>,
 document.getElementById("root"));

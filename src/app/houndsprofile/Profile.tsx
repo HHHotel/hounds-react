@@ -3,6 +3,9 @@ import React from "react";
 import {
     Grid,
     Typography,
+    // makeStyles,
+    // eslint-disable-next-line
+    Theme,
 } from "@material-ui/core";
 
 // eslint-disable-next-line
@@ -10,6 +13,11 @@ import * as api from "@happyhoundhotel/hounds-ts";
 import BookingList from "./bookings/BookingsList";
 
 import {ApiContext} from "../..";
+
+/*
+const useStyles = makeStyles((theme: Theme) => ({
+}));
+*/
 
 interface ListProps {
     dogId: string,
@@ -20,6 +28,7 @@ interface ListProps {
  * @return {React.ReactElement} el
  */
 function BookingsList(props: ListProps) {
+    // const classes = useStyles();
     const [dog, setDog] = React.useState({} as api.IHoundDog);
     const apiAuth = React.useContext(ApiContext);
 
@@ -34,7 +43,6 @@ function BookingsList(props: ListProps) {
     }, []);
 
     return <Grid container>
-        { false && <Typography variant="h5"> im a sad boi </Typography> }
         <Typography variant="h4">{dog.name}</Typography>
         <BookingList bookings={dog.bookings} />
     </Grid>;

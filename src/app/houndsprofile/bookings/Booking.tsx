@@ -4,12 +4,9 @@ import {
     Menu,
     MenuItem,
     Card,
-    // eslint-disable-next-line
     Typography,
     Grid,
     IconButton,
-    // eslint-disable-next-line
-    Divider,
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
@@ -21,7 +18,6 @@ import {
 import {
     format,
 } from "date-fns";
-// eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -94,15 +90,13 @@ function formatBookingDates(booking: api.IHoundEvent) {
 }
 
 // eslint-disable-next-line
-function BookingMenu(props: any) {
-    // eslint-disable-next-line
+function BookingMenu() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
-    // eslint-disable-next-line
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -116,9 +110,9 @@ function BookingMenu(props: any) {
             open={Boolean(anchorEl)}
             onClick={handleClose}
             onClose={handleClose}>
-            <MenuItem onClick={() => console.log()}>See</MenuItem>
-            <MenuItem onClick={() => console.log()}>Edit</MenuItem>
-            <MenuItem onClick={() => console.log()}>Delete</MenuItem>
+            <MenuItem onClick={}>See</MenuItem>
+            <MenuItem onClick={}>Edit</MenuItem>
+            <MenuItem onClick={}>Delete</MenuItem>
         </Menu>
     </div>;
 }

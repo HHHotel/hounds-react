@@ -1,10 +1,5 @@
 import React from "react";
 import {
-    // eslint-disable-next-line
-    MouseEvent
-} from "react";
-
-import {
     Typography,
     IconButton,
     Paper,
@@ -44,7 +39,7 @@ interface FormModalProps {
     children: React.ReactElement
     open: boolean
     disableDrag?: boolean
-    onClose?: (event: MouseEvent) => void
+    onClose?: (event: React.MouseEvent) => void
     title?: string
 }
 
@@ -55,20 +50,17 @@ interface FormModalProps {
 export function FormModal(props: FormModalProps) {
     const classes = useStyles();
 
-    const closeModal = (ev: MouseEvent) => {
+    const closeModal = (ev: React.MouseEvent) => {
         if (props.onClose) {
             props.onClose(ev);
         }
     };
 
-    // eslint-disable-next-line
-    const [draggable, setDrag] = React.useState(!props.disableDrag);
-
     if (!props.open) {
         return null;
     }
 
-    return <Draggable disabled={!draggable} bounds="parent">
+    return <Draggable disabled={props.disableDrag} bounds="parent">
         <Paper className={classes.modalContainer}
             elevation={8}>
             <Grid container>

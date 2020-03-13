@@ -1,6 +1,4 @@
 import React from "react";
-// eslint-disable-next-line
-import {ReactElement} from "react";
 import {
     Fab,
     AppBar,
@@ -10,11 +8,9 @@ import {
     Grid,
     Drawer,
     makeStyles,
-    createStyles,
-    // eslint-disable-next-line
     Menu,
-    // eslint-disable-next-line
     MenuItem,
+    CircularProgress,
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
@@ -34,7 +30,6 @@ import {
     addDays,
     eachDayOfInterval,
 } from "date-fns";
-// eslint-disable-next-line
 import HoundsList from "./houndslist/HoundsList";
 import Profile from "./houndsprofile/Profile";
 import HoundsSidebar from "./sidebar/HoundsSidebar";
@@ -46,7 +41,7 @@ import {ApiContext} from "..";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     sidebarHeader: {
         backgroundColor: theme.palette.primary.main,
     },
@@ -61,24 +56,69 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
+/**
+ * Gets an array of dates Mon-Friday for the week
+ * containing the date d given
+ * @param {Date} d date inside the week to obtain
+ * @return {Date[]} array containing dates in week
+ */
+function getWeekArray(d: Date): Date[] {
+    const day = d.getDay();
+    // Monday is first day of week in this
+    const distFromMon = (day === 0 ? 7 : day) - 1;
+    const d0 = addDays(d, distFromMon * -1);
+    const d6 = addDays(d0, 7);
+    return eachDayOfInterval({
+        start: d0,
+        end: d6,
+    });
+}
+
 interface WeekProps {
     logout: () => void
 }
 
 /**
- * @param {IHoundsWeekProps} props
- * @return {ReactElement} react element to render
+ * @param props properties to render
+ * @return react element to render
  */
-function HoundsWeek(props: WeekProps): ReactElement {
-    // eslint-disable-next-line
+function HoundsWeek(props: WeekProps) {
     const classes = useStyles();
     const apiConfig = React.useContext(ApiContext);
-
     const [dates, updateDates] = React.useState(getWeekArray(new Date()));
-    // eslint-disable-next-line
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
+    const getWeek = async (d0: Date) => {
+        try {
+            const week = await api.getWeek(d0, apiConfig);
+            updateWeek(week);
+            console.log("Loaded week", d0.toDateString());
+        } catch (er) {
+            console.error(er);
+            props.logout();
+        }
+    };
+    const goToWeek = (d: Date) => {
+        const dArr = getWeekArray(d);
+        updateDates(dArr);
+        setDrawer(false);
+        getWeek(dArr[0]);
+    };
+
+    React.useEffect(() => {
+        goToWeek(new Date());
+    }, []);
+
     const [drawerOpen, setDrawer] = React.useState(false);
+    const toggleDrawer = () => setDrawer(!drawerOpen);
+
     const [profileId, setProfileId] = React.useState("");
+    const openProfile = (id: string) => {
+        setProfileId(id);
+        setDrawer(false);
+    };
+    const closeProfile = () => {
+        setProfileId("");
+    };
 
     const FORM_METADATA = {
         "booking": {
@@ -97,7 +137,6 @@ function HoundsWeek(props: WeekProps): ReactElement {
             open: false,
         },
     };
-
     const [modalForm, setModalForm] = React.useState(FORM_METADATA["booking"]);
     const modalFormClose = () => setModalForm({
         ...modalForm,
@@ -111,56 +150,24 @@ function HoundsWeek(props: WeekProps): ReactElement {
         }
     };
 
-    const toggleDrawer = () => setDrawer(!drawerOpen);
-
-    React.useEffect(() => {
-        goToWeek(new Date());
-    }, []);
-
-    // eslint-disable-next-line
-    async function getWeek(d0: Date) {
-        try {
-            const week = await api.getWeek(d0, apiConfig);
-            updateWeek(week);
-            console.log("Loaded week", d0.toDateString());
-        } catch (er) {
-            console.log(d0, apiConfig);
-            console.error(er);
-        }
-    }
-
-    // eslint-disable-next-line
-    function goToWeek(d: Date) {
-        const dArr = getWeekArray(d);
-        updateDates(dArr);
-        setDrawer(false);
-        getWeek(dArr[0]);
-    }
-
-    // eslint-disable-next-line
-    function getWeekArray(d: Date): Date[] {
-        const day = d.getDay();
-        // Monday is first day of week in this
-        const distFromMon = (day === 0 ? 7 : day) - 1;
-        const d0 = addDays(d, distFromMon * -1);
-        const d6 = addDays(d0, 7);
-        return eachDayOfInterval({
-            start: d0,
-            end: d6,
-        });
+    let mainview;
+    if (profileId) {
+        mainview = <Profile dogId={profileId} />;
+    } else if (week.length > 0) {
+        mainview = <HoundsList className={classes.weekContainer}
+            dates={dates} weekList={week}/>;
+    } else {
+        mainview = <Grid container justify="center">
+            <CircularProgress />
+        </Grid>;
     }
 
     return <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Drawer open={drawerOpen}
-            onClose={() => toggleDrawer()}
-            anchor="left">
-            <HoundsSidebar onLookup={(id) => {
-                setProfileId(id);
-                setDrawer(false);
-            }}
-            initDate={dates[0]}
-            onDateChange={goToWeek}
-            logout={props.logout} />
+        <Drawer open={drawerOpen} onClose={toggleDrawer} anchor="left">
+            <HoundsSidebar onLookup={openProfile}
+                initDate={dates[0]}
+                onDateChange={goToWeek}
+                logout={props.logout} />
         </Drawer>
         <AppBar position="sticky" color="default">
             <Toolbar>
@@ -180,8 +187,10 @@ function HoundsWeek(props: WeekProps): ReactElement {
                     edge="end">
                     <ArrowLeft />
                 </IconButton>
-                <IconButton onClick={() => goToWeek(new Date())}
-                    edge="end">
+                <IconButton onClick={() => {
+                    goToWeek(new Date()); closeProfile();
+                }}
+                edge="end">
                     <Home />
                 </IconButton>
                 <IconButton onClick={() => goToWeek(addDays(dates[0], 7))}
@@ -190,19 +199,15 @@ function HoundsWeek(props: WeekProps): ReactElement {
                 </IconButton>
             </Toolbar>
         </AppBar>
-        <> { !profileId && <HoundsList className={classes.weekContainer}
-            dates={dates}
-            weekList={week}/> }
-        { profileId && <Profile dogId={profileId} /> }
-        </>
+        {mainview}
+
         <AddMenu openModal={modalFormOpen}/>
         <FormModals />
     </MuiPickersUtilsProvider>;
 
     // eslint-disable-next-line
     function FormModals() {
-        // eslint-disable-next-line
-        function GetTypedModal() {
+        const GetTypedModal = () => {
             switch (modalForm.type) {
             case "booking":
                 return <BookingForm onSubmit={modalFormClose}/>;
@@ -213,7 +218,7 @@ function HoundsWeek(props: WeekProps): ReactElement {
             default:
                 return null;
             }
-        }
+        };
         return <FormModal disableDrag={true}
             open={modalForm.open}
             onClose={modalFormClose}
@@ -224,18 +229,15 @@ function HoundsWeek(props: WeekProps): ReactElement {
 }
 export default HoundsWeek;
 
-
 // eslint-disable-next-line
 function AddMenu({openModal}: any) {
     const classes = useStyles();
-    // eslint-disable-next-line
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
-    // eslint-disable-next-line
     const handleClose = () => {
         setAnchorEl(null);
     };

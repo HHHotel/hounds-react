@@ -27,9 +27,7 @@ import {
 
 import {ApiContext} from "../../..";
 
-// eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import {findEvents} from "@happyhoundhotel/hounds-ts";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     searchContainer: {
@@ -88,22 +86,22 @@ interface SearchProps {
     filter?: (result: api.IHoundEvent | api.IHoundDog) => boolean
 }
 
-// eslint-disable-next-line
-export function HoundsSearch(props: SearchProps): React.ReactElement {
+/**
+ * @param {SearchProps} props
+ * @return {React.ReactElement} el
+ */
+export function HoundsSearch(props: SearchProps) {
     const classes = useStyles();
     const [searchText, updateSearch] = React.useState("");
-    const resArr: Array<api.IHoundDog | api.IHoundEvent> = [];
-    const [results, updateResults] = React.useState(resArr);
+    const [results, updateResults] = React.useState([]);
     const apiConfig = React.useContext(ApiContext);
     const filter = props.filter ? props.filter : () => true;
 
-    // eslint-disable-next-line
-    function search() {
-        findEvents(searchText, apiConfig).then((res) => {
-            console.log(res);
+    const search = () => {
+        api.findEvents(searchText, apiConfig).then((res) => {
             updateResults(res.data);
         });
-    }
+    };
 
     return <div className={classes.searchContainer} style={props.style}>
         <Grid className={classes.search}
@@ -149,12 +147,10 @@ interface ResultCardProps {
     onSelect?: (result: api.IHoundEvent | api.IHoundDog) => void
 }
 
-// eslint-disable-next-line
-function ResultCard(props: ResultCardProps) {
+const ResultCard = (props: ResultCardProps) => {
     const classes = useStyles();
 
-    // eslint-disable-next-line
-    function getHeadingText() {
+    const getHeadingText = () => {
         if (props.type === "dog") {
             const item = props.item as api.IHoundDog;
             return item.name;
@@ -162,9 +158,8 @@ function ResultCard(props: ResultCardProps) {
             const item = props.item as api.IHoundEvent;
             return item.text;
         }
-    }
-    // eslint-disable-next-line
-    function getSubtitleText() {
+    };
+    const getSubtitleText = () => {
         if (props.type === "event") {
             const item = props.item as api.IHoundEvent;
             const start = new Date(item.startDate);
@@ -176,31 +171,29 @@ function ResultCard(props: ResultCardProps) {
         const item = props.item as api.IHoundDog;
 
         return item.clientName;
-    }
+    };
 
-    return <>
-        <Card className={classes.searchCard}>
-            <Grid container
-                alignContent="space-between"
-                justify="space-between"
-                direction="row">
-                <div style={{flexGrow: 10}}>
-                    <Typography variant="h6">
-                        {getHeadingText()}
-                    </Typography>
-                    <Divider />
-                    <Typography variant="subtitle1"
-                        style={{fontStyle: "italic"}}>
-                        {getSubtitleText()}
-                    </Typography>
-                </div>
-                <IconButton onClick={
-                    () => props.onSelect ? props.onSelect(props.item) : null
-                }>
-                    { props.type === "dog" && <Pets /> }
-                    { props.type === "event" && <Event /> }
-                </IconButton>
-            </Grid>
-        </Card>
-    </>;
-}
+    return <Card className={classes.searchCard}>
+        <Grid container
+            alignContent="space-between"
+            justify="space-between"
+            direction="row">
+            <div style={{flexGrow: 10}}>
+                <Typography variant="h6">
+                    {getHeadingText()}
+                </Typography>
+                <Divider />
+                <Typography variant="subtitle1"
+                    style={{fontStyle: "italic"}}>
+                    {getSubtitleText()}
+                </Typography>
+            </div>
+            <IconButton onClick={
+                () => props.onSelect ? props.onSelect(props.item) : null
+            }>
+                { props.type === "dog" && <Pets /> }
+                { props.type === "event" && <Event /> }
+            </IconButton>
+        </Grid>
+    </Card>;
+};

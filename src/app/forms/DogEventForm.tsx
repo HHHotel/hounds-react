@@ -1,12 +1,14 @@
 import React from "react";
 import {
+    makeStyles,
+} from "@material-ui/styles";
+import {
     InputLabel,
     FormControlLabel,
     Checkbox,
     FormControl,
     Grid,
     Button,
-    makeStyles,
     NativeSelect,
     // eslint-disable-next-line
     Theme,
@@ -44,7 +46,7 @@ interface DogEventForm {
 }
 
 /**
- * @param {any} props
+ * @param {any} props element props
  * @return {React.ReactElement} el
  * */
 function DogEventForm(props: any) {
@@ -78,32 +80,6 @@ function DogEventForm(props: any) {
         setType("boarding");
     };
 
-    let bookingInputs = null;
-    switch (type) {
-    case "boarding":
-        bookingInputs = <DateTimePicker className={classes.dateInputs}
-            required
-            variant="inline"
-            label="End"
-            onChange={(nval) => changeDateState(nval, setEnd)}
-            value={end}
-        />;
-    case "daycare":
-        bookingInputs = <>
-            <TimePicker className={classes.dateInputs}
-                required
-                variant="inline"
-                label="End"
-                onChange={(nval) => changeDateState(nval, setEnd)}
-                value={end}
-            />
-            <FormControlLabel
-                control={<Checkbox value={repeat} color="primary"
-                    onChange={(ev) => setRepeat(ev.target.checked)}/>}
-                label="Repeat Event"/>
-        </>;
-    }
-
     return <form onSubmit={onSubmit}
         className={classes.formWrapper}>
         <FormControl>
@@ -127,7 +103,32 @@ function DogEventForm(props: any) {
                 onChange={(nval) => changeDateState(nval, setStart)}
                 value={start}
             />
-            {bookingInputs}
+            {type === "daycare" ?
+                (<>
+                    <TimePicker className={classes.dateInputs}
+                        required
+                        variant="inline"
+                        label="End"
+                        onChange={(nval) => changeDateState(nval, setEnd)}
+                        value={end}
+                    />
+                    <FormControlLabel label="Repeat Event"
+                        control = {
+                            <Checkbox value={repeat}
+                                color="primary"
+                                onChange={(ev) =>
+                                    setRepeat(ev.target.checked)}
+                            />
+                        }/>
+                </>
+                ) : (
+                    <DateTimePicker className={classes.dateInputs}
+                        required
+                        variant="inline"
+                        label="End"
+                        onChange={(nval) => changeDateState(nval, setEnd)}
+                        value={end}/>
+                )}
         </Grid>
         <Button className={classes.formItem}
             variant="contained"

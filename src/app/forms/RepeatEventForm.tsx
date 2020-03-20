@@ -1,8 +1,10 @@
 import React from "react";
 import {
+    makeStyles,
+} from "@material-ui/styles";
+import {
     FormControl,
     Button,
-    makeStyles,
     NativeSelect,
     // eslint-disable-next-line
     Theme,
@@ -54,7 +56,7 @@ interface RepeatEventFormProps {
 }
 
 /**
- * @param {RepeatEventFormProps} props
+ * @param {RepeatEventFormProps} props element props
  * @return {React.ReactElement} el
  * */
 function RepeatEventForm(props: RepeatEventFormProps) {

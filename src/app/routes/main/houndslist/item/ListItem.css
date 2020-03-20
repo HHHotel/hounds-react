@@ -1,0 +1,49 @@
+.event-text {
+    text-decoration: none;
+    margin-right: .5rem !important;
+    text-indent: -0.5rem;
+    margin-left: 1rem !important;
+    user-select: none;
+    cursor: pointer;
+}
+
+.arriving {
+    color: blue;
+}
+
+.departing {
+    color: red;
+}
+
+
+.boarding {
+    color: maroon;
+}
+
+.daycare {
+    color: hotpink;
+}
+
+.grooming {
+    color: green;
+}
+
+.foster {
+    color: darkblue;
+}
+
+.visit {
+    color: purple;
+}
+
+.eval {
+    color: darkorchid;
+}
+
+.taxi {
+    color: #b4003c;
+}
+
+.general {
+    color: darkslategrey;
+}

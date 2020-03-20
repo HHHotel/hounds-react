@@ -1,10 +1,12 @@
 import React from "react";
 import {
+    makeStyles,
+} from "@material-ui/styles";
+import {
     FormControl,
     Grid,
     Button,
     TextField,
-    makeStyles,
     Select,
     // eslint-disable-next-line
     Theme,
@@ -12,10 +14,11 @@ import {
 
 import {
     DateTimePicker,
+    TimePicker,
 } from "@material-ui/pickers";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {ApiContext} from "../..";
+import {ApiConfigContext} from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -39,7 +42,7 @@ interface EventFormProps {
 }
 
 /**
- * @param {EventFormProps} props
+ * @param {EventFormProps} props element props
  * @return {React.ReactElement} Element to render
  * */
 function EventForm(props: EventFormProps) {
@@ -49,7 +52,7 @@ function EventForm(props: EventFormProps) {
     const [end, setEnd] = React.useState(null as any);
     const [text, setText] = React.useState("");
     const [type, setType] = React.useState("general");
-    const apiAuth = React.useContext(ApiContext);
+    const {apiConfig} = React.useContext(ApiConfigContext);
 
     const updateStart = (ustart: Date | null) => {
         if (!ustart) {
@@ -73,7 +76,7 @@ function EventForm(props: EventFormProps) {
             endDate: end as any as Date,
             text,
             type,
-        }, apiAuth);
+        }, apiConfig);
 
         setStart(null);
         setEnd(null);
@@ -105,7 +108,7 @@ function EventForm(props: EventFormProps) {
                 onChange={(nval) => updateStart(nval)}
                 value={start}
             />
-            <DateTimePicker className={classes.dateInputs}
+            <TimePicker className={classes.dateInputs}
                 required
                 variant="inline"
                 label="End"

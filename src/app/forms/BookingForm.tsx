@@ -6,9 +6,8 @@ import {
 } from "date-fns";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {HoundsSearch} from "../components";
-
-import {ApiContext} from "../..";
+import {HoundsSearch} from "../components/HoundsSearch";
+import {ApiConfigContext} from "../contexts";
 import DogEventForm from "./DogEventForm";
 import RepeatEventForm from "./RepeatEventForm";
 // eslint-disable-next-line
@@ -19,13 +18,13 @@ interface BookingFormProps {
 }
 
 /**
- * @param {BookingFormProps} props
+ * @param {BookingFormProps} props element props
  * @return {React.ReactElement} Element to render
  * */
 function BookingForm(props: BookingFormProps) {
     const [formIndex, setFormIndex] = React.useState(0);
     const [booking, setBooking] = React.useState({} as api.IHoundEvent);
-    const apiAuth = React.useContext(ApiContext);
+    const {apiConfig} = React.useContext(ApiConfigContext);
 
     const onSelectDog = (dog: api.IHoundDog | api.IHoundEvent) => {
         dog = dog as api.IHoundDog;
@@ -55,7 +54,7 @@ function BookingForm(props: BookingFormProps) {
             api.addEvent({
                 ...booking,
                 ...ev,
-            }, apiAuth);
+            }, apiConfig);
             console.log({
                 ...booking,
                 ...ev,
@@ -78,7 +77,7 @@ function BookingForm(props: BookingFormProps) {
         };
         while (differenceInDays(opts.stop, ev.startDate) >= 0) {
             evlist.push(ev);
-            api.addEvent(ev, apiAuth);
+            api.addEvent(ev, apiConfig);
             ev = {
                 ...ev,
                 startDate: opts.incFunc(ev.startDate),

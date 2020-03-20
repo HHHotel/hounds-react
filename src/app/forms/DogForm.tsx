@@ -1,4 +1,7 @@
 import React from "react";
+import {
+    makeStyles,
+} from "@material-ui/styles";
 
 import {
     // eslint-disable-next-line
@@ -8,7 +11,6 @@ import {
 import {
     Button,
     TextField,
-    makeStyles,
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
@@ -16,7 +18,7 @@ import {
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
 
-import {ApiContext} from "../..";
+import {ApiConfigContext} from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -33,7 +35,7 @@ interface DogFormProps {
 }
 
 /**
- * @param {DogFormProps} props
+ * @param {DogFormProps} props element props
  * @return {React.ReactElement} Element to render
  * */
 function DogForm(props: DogFormProps) {
@@ -41,7 +43,7 @@ function DogForm(props: DogFormProps) {
 
     const [dogName, setDogName] = React.useState("");
     const [clientName, setClientName] = React.useState("");
-    const apiAuth = React.useContext(ApiContext);
+    const {apiConfig} = React.useContext(ApiConfigContext);
 
     const onSubmit = (event: FormEvent) => {
         event.preventDefault();
@@ -52,7 +54,7 @@ function DogForm(props: DogFormProps) {
             name: dogName,
             clientName: clientName,
             bookings: [],
-        }, apiAuth);
+        }, apiConfig);
 
         setDogName("");
         setClientName("");

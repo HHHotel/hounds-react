@@ -23,6 +23,7 @@ import {
 } from "date-fns";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
+import { SettingsContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -51,6 +52,7 @@ interface DogEventForm {
  * */
 function DogEventForm(props: any) {
     const classes = useStyles();
+    const {settings} = React.useContext(SettingsContext);
     const [start, setStart] = React.useState(null as any);
     const [end, setEnd] = React.useState(null as any);
     const [type, setType] = React.useState("boarding");
@@ -97,6 +99,7 @@ function DogEventForm(props: any) {
             alignContent="center"
             direction="row">
             <DateTimePicker className={classes.dateInputs}
+                minutesStep={settings.eventTimeStep}
                 required
                 variant="inline"
                 label="Start"
@@ -106,6 +109,7 @@ function DogEventForm(props: any) {
             {type === "daycare" ?
                 (<>
                     <TimePicker className={classes.dateInputs}
+                        minutesStep={settings.eventTimeStep}
                         required
                         variant="inline"
                         label="End"
@@ -123,6 +127,7 @@ function DogEventForm(props: any) {
                 </>
                 ) : (
                     <DateTimePicker className={classes.dateInputs}
+                        minutesStep={settings.eventTimeStep}
                         required
                         variant="inline"
                         label="End"

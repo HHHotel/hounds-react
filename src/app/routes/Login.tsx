@@ -63,7 +63,6 @@ interface LoginProps {
  * @return {ReactElement} react element to render
  */
 function HoundsLogin(props: LoginProps) {
-    const history = useHistory();
     const classes = useStyles();
     const {settings} = React.useContext(SettingsContext);
     const {setAuth} = React.useContext(ApiConfigContext);
@@ -84,15 +83,19 @@ function HoundsLogin(props: LoginProps) {
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setLoading(true);
-        const auth = await api.login(
-            user.username,
-            user.password,
-            settings.apiUrl,
-        );
-        console.log(auth);
-        setAuth(auth);
-        setLoading(false);
-        history.push("/app/main");
+        try {
+            const auth = await api.login(
+                user.username,
+                user.password,
+                settings.apiUrl,
+            );
+            setLoading(false);
+            return setAuth(auth);
+        } catch (err) {
+            console.error(err);
+            alert("Login failed: " + err.message);
+            setLoading(false);
+        }
     };
 
     return <Container component="main" maxWidth="xs">

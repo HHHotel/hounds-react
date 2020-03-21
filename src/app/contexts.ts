@@ -14,6 +14,7 @@ export interface HoundsSettings {
             pm: number,
         }
     },
+    eventTimeStep: number,
 }
 
 const SETTINGS_KEY = "HOUNDS_WEB_SETTINGS";
@@ -21,7 +22,7 @@ const SETTINGS_KEY = "HOUNDS_WEB_SETTINGS";
 export const loadSettings = (): HoundsSettings => {
     const defaultSettings = {
         apiUrl: window.location.host,
-        hours: {opening: {am: 8, pm: 16}, closing: {am: 10, pm: 18}},
+        hours: {opening: {am: 8, pm: 16}, closing: {am: 10, pm: 18}, eventTimeStep: 5},
     };
     const settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null");
 
@@ -40,7 +41,7 @@ export const loadApiConfig = (): api.IHoundsConfig => {
     const auth = stored ? JSON.parse(stored) : null;
     return {
         apiURL: settings.apiUrl,
-        apiVersion: "0.3.4", // api.version,
+        apiVersion: "0.3.5", // api.version,
         apiAuth: auth,
     };
 };

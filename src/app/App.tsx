@@ -13,7 +13,7 @@ import "./App.css";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import {SettingsContext, ApiConfigContext, loadApiConfig, saveAuth} from "./contexts";
+import {SettingsContext, ApiConfigContext, loadApiConfig, saveAuth, loadSettings} from "./contexts";
 
 // eslint-disable-next-line
 import HoundsLogin from "./routes/Login";
@@ -29,15 +29,21 @@ const theme = createMuiTheme();
  */
 export default function App() {
     const [apiConf, setApiConf] = React.useState(loadApiConfig());
-    const {settings, setSettings} = React.useContext(SettingsContext);
+    const [settings, setSettings] = React.useState(loadSettings());
 
     const setAuth = (auth: {username: string, token: string} | null) => {
         saveAuth(auth);
         setApiConf({
             ...apiConf,
-            apiAuth: auth, // TODO wrap api.IHoundsConfig to allow null
-        } as any);
+            apiAuth: auth,
+        } as any); // TODO wrap api.IHoundsConfig to allow auth null
     };
+
+    React.useEffect(() => {
+        api.checkAuthentication(apiConf).then((valid) => {
+            setAuth(valid ? apiConf.apiAuth : null);
+        });
+    }, []);
 
     return <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Router>
@@ -56,7 +62,9 @@ export default function App() {
                                 <DogProfile />
                             </Route>
                             <Route path="/login">
-                                <HoundsLogin />
+                                {apiConf.apiAuth ?
+                                    <Redirect to={"/app/main"} /> :
+                                    <HoundsLogin />}
                             </Route>
                             <Route path="*">
                                 <Redirect to="/app/main" />

@@ -57,8 +57,8 @@ interface IHoundsListProps {
 function HoundsList(props: IHoundsListProps) {
     const classes = useStyles();
     const weekList = props.weekList
-        .map((day: any) => day.sort(api.compareScheduleEvents)
-            .map((ev: any) => <ListItem sevent={ev} key={ev.id} />),
+        .map((day) => day.sort(api.compareScheduleEvents)
+            .map((ev) => <ListItem sevent={ev} key={ev.id} />),
         );
 
     return <div className={props.className}>

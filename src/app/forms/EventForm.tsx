@@ -18,7 +18,7 @@ import {
 } from "@material-ui/pickers";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {ApiConfigContext} from "../contexts";
+import {ApiConfigContext, SettingsContext} from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -47,7 +47,7 @@ interface EventFormProps {
  * */
 function EventForm(props: EventFormProps) {
     const classes = useStyles();
-
+    const {settings} = React.useContext(SettingsContext);
     const [start, setStart] = React.useState(null as any);
     const [end, setEnd] = React.useState(null as any);
     const [text, setText] = React.useState("");
@@ -103,12 +103,14 @@ function EventForm(props: EventFormProps) {
             direction="row">
             <DateTimePicker className={classes.dateInputs}
                 required
+                minutesStep={settings.eventTimeStep}
                 variant="inline"
                 label="Start"
                 onChange={(nval) => updateStart(nval)}
                 value={start}
             />
             <TimePicker className={classes.dateInputs}
+                minutesStep={settings.eventTimeStep}
                 required
                 variant="inline"
                 label="End"

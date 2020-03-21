@@ -9,7 +9,7 @@ import * as api from "@happyhoundhotel/hounds-ts";
 import "./ListItem.css";
 
 interface IListItemProps {
-    sevent: api.IHoundBooking
+    sevent: api.IScheduleEvent
 }
 
 /**

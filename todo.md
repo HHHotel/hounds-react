@@ -1,6 +1,6 @@
 # TODO List  
 
-[O] [1] "Dog Profiles" #UI #Backlog  
+[X] [1] "Dog Profiles" #UI #Backlog  
 [_] [1] "Remove eslint-disable-next-line where possible" #codepractice  
 [_] [1] "Document code that is already written" #codepractice  
 [_] [1] "refractor the styling to share some things" #codepractice  

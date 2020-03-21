@@ -88,7 +88,6 @@ function HoundsWeek(props: WeekProps) {
         try {
             const week = await api.getWeek(d0, apiConfig);
             updateWeek(week);
-            console.log(week);
             console.log("Loaded week", d0.toDateString());
         } catch (er) {
             console.error(er);

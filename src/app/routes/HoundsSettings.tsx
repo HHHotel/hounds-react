@@ -1,8 +1,10 @@
 import React from "react";
 import {
     Button,
+    Input,
     Grid,
     TextField,
+    Container,
 } from "@material-ui/core";
 import {
     TimePicker,
@@ -12,6 +14,8 @@ import {
 } from "date-fns";
 
 import {SettingsContext} from "../contexts";
+
+import HoundsNav from "../components/HoundsNav";
 
 interface SettingsProps {
 }
@@ -32,6 +36,7 @@ function HoundsSettings(props: SettingsProps) {
 
     const {settings, setSettings} = React.useContext(SettingsContext);
     const [url, setUrl] = React.useState(settings.apiUrl);
+    const [eventTimeStep, setEventTimeStep] = React.useState(settings.eventTimeStep);
     const [opening, setOpening] = React.useState(
         hoursToDate(settings.hours.opening),
     );
@@ -39,60 +44,91 @@ function HoundsSettings(props: SettingsProps) {
         hoursToDate(settings.hours.closing),
     );
 
+    const minMaxProps = {inputProps: {min: 1, max: 60}};
+
     const saveSettings = (ev) => {
         ev.preventDefault();
-        console.log(opening, closing);
         setSettings({
             apiUrl: url,
             hours: {
                 opening: {am: opening.am.getHours(), pm: opening.pm.getHours()},
                 closing: {am: closing.am.getHours(), pm: closing.pm.getHours()},
             },
+            eventTimeStep,
         });
     };
 
-    return <form onSubmit={saveSettings}>
-        <Grid container direction="column">
-            <TextField onChange={(el) => setUrl(el.target.value)}
-                value={url}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="API URL"
-                autoFocus
-            />
-            <TimePicker label="Opening AM"
-                views={["hours"]}
-                value={opening.am}
-                onChange={(uval) =>
-                    uval && setOpening({...opening, am: uval})} />
+    return <>
+        <HoundsNav title="Settings" />
+        <form onSubmit={saveSettings}>
+            <Container maxWidth="xs">
+                <Grid container alignContent="center" justify="center">
+                    <TextField onChange={(el) => setUrl(el.target.value)}
+                        value={url}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="API URL"
+                        autoFocus
+                    />
 
-            <TimePicker label="Closing AM"
-                views={["hours"]}
-                value={closing.am}
-                onChange={(uval) =>
-                    uval && setOpening({...closing, am: uval})} />
+                    <TimePicker label="Opening AM"
+                        inputVariant="outlined"
+                        views={["hours"]}
+                        margin="normal"
+                        value={opening.am}
+                        onChange={(uval) =>
+                            uval && setOpening({...opening, am: uval})} />
+                    <TimePicker label="Closing AM"
+                        inputVariant="outlined"
+                        views={["hours"]}
+                        margin="normal"
+                        value={closing.am}
+                        onChange={(uval) =>
+                            uval && setClosing({...closing, am: uval})} />
+                    <TimePicker label="Opening PM"
+                        inputVariant="outlined"
+                        views={["hours"]}
+                        margin="normal"
+                        value={opening.pm}
+                        onChange={(uval) =>
+                            uval && setOpening({...opening, pm: uval})} />
+                    <TimePicker label="Closing PM"
+                        inputVariant="outlined"
+                        views={["hours"]}
+                        margin="normal"
+                        value={closing.pm}
+                        onChange={(uval) =>
+                            uval && setClosing({...closing, pm: uval})} />
 
-            <TimePicker label="Opening PM"
-                views={["hours"]}
-                value={opening.pm}
-                onChange={(uval) =>
-                    uval && setOpening({...opening, pm: uval})} />
+                    <TextField value={eventTimeStep}
+                        onChange={(el) =>
+                            setEventTimeStep(
+                                el.target.value ?
+                                    parseInt(el.target.value, 10) :
+                                    1,
+                            )}
+                        type="number"
+                        InputProps={minMaxProps}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Event Time Step"
+                        autoFocus
+                    />
 
-            <TimePicker label="Closing PM"
-                views={["hours"]}
-                value={closing.pm}
-                onChange={(uval) =>
-                    uval && setOpening({...closing, pm: uval})} />
-
-            <Button color="primary"
-                variant="contained"
-                type="submit">
+                    <Button fullWidth
+                        color="primary"
+                        variant="contained"
+                        type="submit">
                     Save
-            </Button>
-        </Grid>
-    </form>;
+                    </Button>
+                </Grid>
+            </Container>
+        </form>
+    </>;
 }
 
 export default HoundsSettings;

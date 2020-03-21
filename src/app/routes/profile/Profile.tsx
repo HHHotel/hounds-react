@@ -15,9 +15,10 @@ import {
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import BookingList from "./bookings/BookingsList";
-
 import {ApiConfigContext} from "../../contexts";
+
+import BookingList from "./bookings/BookingsList";
+import HoundsNav from "../../components/HoundsNav";
 
 /*
 const useStyles = makeStyles((theme: Theme) => ({
@@ -37,7 +38,6 @@ function DogProfile(props: ListProps) {
     const [dog, setDog] = React.useState({} as api.IHoundDog);
     const {apiConfig} = React.useContext(ApiConfigContext);
     const {dogId} = useParams();
-    console.log(dogId);
 
     const updateDog = async () => {
         const id = props.dogId || dogId;
@@ -46,7 +46,6 @@ function DogProfile(props: ListProps) {
         }
 
         const udog = await api.retrieveDog(id, apiConfig);
-        console.log(udog);
         setDog(udog);
     };
 
@@ -54,10 +53,13 @@ function DogProfile(props: ListProps) {
         updateDog();
     }, []);
 
-    return <Grid container>
-        <Typography variant="h4">{dog.name}</Typography>
-        <BookingList bookings={dog.bookings} />
-    </Grid>;
+    return <>
+        <HoundsNav title="Profile"/>
+        <Grid container>
+            <Typography variant="h4">{dog.name}</Typography>
+            <BookingList bookings={dog.bookings} />
+        </Grid>
+    </>;
 }
 
 export default DogProfile;

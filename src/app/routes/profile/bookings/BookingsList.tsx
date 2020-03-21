@@ -30,7 +30,7 @@ function BookingsList(props: ListProps) {
             while loading it should lazy render the bookings so as to not block
             */
             props.bookings
-                .slice(0, 100)
+                .slice(0, 5)
                 .map((b) => <Booking key={b.id} data={b} />)
         }
     </Grid>;

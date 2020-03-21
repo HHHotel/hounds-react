@@ -23,7 +23,7 @@ import {
 } from "date-fns";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import { SettingsContext } from "../contexts";
+import {SettingsContext} from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -68,12 +68,15 @@ function DogEventForm(props: any) {
     const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
 
-        const timeEnd = end.valueOf() - startOfDay(end).valueOf();
-        const uend = startOfDay(start).valueOf() + timeEnd;
+        if (type === "daycare") {
+            const timeEnd = end.valueOf() - startOfDay(end).valueOf();
+            const uend = startOfDay(start).valueOf() + timeEnd;
+            setEnd(new Date(uend));
+        }
 
         props.onSubmit({
             startDate: start,
-            endDate: new Date(uend),
+            endDate: end,
             type,
         }, repeat);
 

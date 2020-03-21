@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Button,
-    Input,
     Grid,
     TextField,
     Container,
@@ -36,7 +35,9 @@ function HoundsSettings(props: SettingsProps) {
 
     const {settings, setSettings} = React.useContext(SettingsContext);
     const [url, setUrl] = React.useState(settings.apiUrl);
-    const [eventTimeStep, setEventTimeStep] = React.useState(settings.eventTimeStep);
+    const [eventTimeStep, setEventTimeStep] = React.useState(
+        settings.eventTimeStep || 5,
+    );
     const [opening, setOpening] = React.useState(
         hoursToDate(settings.hours.opening),
     );
@@ -46,7 +47,7 @@ function HoundsSettings(props: SettingsProps) {
 
     const minMaxProps = {inputProps: {min: 1, max: 60}};
 
-    const saveSettings = (ev) => {
+    const saveSettings = (ev: React.FormEvent) => {
         ev.preventDefault();
         setSettings({
             apiUrl: url,
@@ -109,8 +110,8 @@ function HoundsSettings(props: SettingsProps) {
                                     parseInt(el.target.value, 10) :
                                     1,
                             )}
-                        type="number"
                         InputProps={minMaxProps}
+                        type="number"
                         variant="outlined"
                         margin="normal"
                         required

@@ -21,8 +21,12 @@ const SETTINGS_KEY = "HOUNDS_WEB_SETTINGS";
 // Loads settings from localStorage
 export const loadSettings = (): HoundsSettings => {
     const defaultSettings = {
-        apiUrl: window.location.host,
-        hours: {opening: {am: 8, pm: 16}, closing: {am: 10, pm: 18}, eventTimeStep: 5},
+        apiUrl: `${window.location.protocol}//${window.location.host}`,
+        hours: {
+            opening: {am: 8, pm: 16},
+            closing: {am: 10, pm: 18},
+            eventTimeStep: 5,
+        },
     };
     const settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null");
 

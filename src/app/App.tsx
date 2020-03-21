@@ -13,12 +13,21 @@ import "./App.css";
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import {SettingsContext, ApiConfigContext, loadApiConfig, saveAuth, loadSettings} from "./contexts";
+import {
+    // eslint-disable-next-line
+    HoundsSettings,
+    SettingsContext,
+    ApiConfigContext,
+    loadApiConfig,
+    saveAuth,
+    loadSettings,
+    setSettings,
+} from "./contexts";
 
 // eslint-disable-next-line
 import HoundsLogin from "./routes/Login";
 import HoundsWeek from "./routes/main/HoundsWeek";
-import HoundsSettings from "./routes/HoundsSettings";
+import HoundsSettingsPage from "./routes/HoundsSettings";
 import DogProfile from "./routes/profile/Profile";
 
 const theme = createMuiTheme();
@@ -29,7 +38,7 @@ const theme = createMuiTheme();
  */
 export default function App() {
     const [apiConf, setApiConf] = React.useState(loadApiConfig());
-    const [settings, setSettings] = React.useState(loadSettings());
+    const [settings, updateSettings] = React.useState(loadSettings());
 
     const setAuth = (auth: {username: string, token: string} | null) => {
         saveAuth(auth);
@@ -37,6 +46,10 @@ export default function App() {
             ...apiConf,
             apiAuth: auth,
         } as any); // TODO wrap api.IHoundsConfig to allow auth null
+    };
+    const saveSettings = (settings: HoundsSettings) => {
+        setSettings(settings);
+        updateSettings(settings);
     };
 
     React.useEffect(() => {
@@ -48,7 +61,10 @@ export default function App() {
     return <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Router>
             <ThemeProvider theme={theme}>
-                <SettingsContext.Provider value={{settings, setSettings}}>
+                <SettingsContext.Provider value={{
+                    settings,
+                    setSettings: saveSettings,
+                }}>
                     <ApiConfigContext.Provider
                         value={{apiConfig: apiConf, setAuth}}>
                         <Switch>
@@ -56,7 +72,7 @@ export default function App() {
                                 <HoundsWeek />
                             </PrivateRoute>
                             <Route path="/app/settings">
-                                <HoundsSettings />
+                                <HoundsSettingsPage />
                             </Route>
                             <Route path="/app/profile/:dogId">
                                 <DogProfile />
@@ -88,7 +104,7 @@ function PrivateRoute({children, ...rest}: any) {
     return (
         <Route
             {...rest}
-            render={({location}) =>
+            render={({location}: any) =>
                 apiConfig.apiAuth ?
                     (
                         children

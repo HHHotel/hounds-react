@@ -184,7 +184,6 @@ function HoundsWeek(props: WeekProps) {
             </Toolbar>
         </AppBar>
         {mainview}
-
         <AddMenu openModal={modalFormOpen}/>
         <FormModals />
     </>;

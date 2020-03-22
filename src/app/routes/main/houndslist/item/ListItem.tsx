@@ -7,6 +7,7 @@ import {Typography} from "@material-ui/core";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 import "./ListItem.css";
+import { SettingsContext } from "../../../../contexts";
 
 interface IListItemProps {
     sevent: api.IScheduleEvent
@@ -14,20 +15,21 @@ interface IListItemProps {
 
 /**
  * @param {IListItemProps} props object to determine render
- * @return {React.Node} React element to render
+ * @return {React.ReactElement} React element to render
  */
 function ListItem(props: IListItemProps) {
     const classes = `event-text ${props.sevent.type}`;
     const insideText = <Typography className={classes}>
         {getEventText(props.sevent)}
     </Typography>;
-    if (props.sevent.dogId) {
-        return <Link to={`/app/profile/${props.sevent.dogId}`}>
+
+    return props.sevent.dogId ? (
+        <Link to={`/app/profile/${props.sevent.dogId}`}>
             {insideText}
-        </Link>;
-    } else {
-        return insideText;
-    }
+        </Link>
+    ) : (
+        insideText
+    );
 }
 
 /**
@@ -35,10 +37,24 @@ function ListItem(props: IListItemProps) {
  * @return {string} event text
  */
 function getEventText(sevent: api.IScheduleEvent) {
-    if (!sevent.startDate) {
+    const {settings} = React.useContext(SettingsContext);
+    if (!sevent.startDate || !sevent.endDate) {
         return sevent.text;
     }
-    const prepend = sevent.startDate && api.getTimePrepend(sevent);
+
+    const end = new Date(sevent.endDate);
+    // Set event end for events that should default to opening -> closing
+    switch (sevent.startDate.getHours()) {
+    case settings.hours.opening.am:
+        end.setHours(settings.hours.closing.am);
+        break;
+    case settings.hours.opening.pm:
+        end.setHours(settings.hours.closing.pm);
+        break;
+    }
+
+    const prepend = sevent.startDate &&
+        api.getTimePrepend({...sevent, endDate: end});
     return `${prepend} ${sevent.text}`;
 }
 

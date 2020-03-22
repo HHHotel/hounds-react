@@ -23,7 +23,7 @@ import {
 } from "date-fns";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import { SettingsContext } from "../contexts";
+import {SettingsContext} from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {

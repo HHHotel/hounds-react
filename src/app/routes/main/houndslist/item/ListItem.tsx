@@ -7,7 +7,7 @@ import {Typography} from "@material-ui/core";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 import "./ListItem.css";
-import { SettingsContext } from "../../../../contexts";
+import {SettingsContext} from "../../../../contexts";
 
 interface IListItemProps {
     sevent: api.IScheduleEvent

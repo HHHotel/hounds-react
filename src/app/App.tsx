@@ -29,6 +29,7 @@ import HoundsLogin from "./routes/Login";
 import HoundsWeek from "./routes/main/HoundsWeek";
 import HoundsSettingsPage from "./routes/HoundsSettings";
 import DogProfile from "./routes/profile/Profile";
+import {getWeekArray} from "./routes/main/utils";
 
 const theme = createMuiTheme();
 
@@ -39,6 +40,7 @@ const theme = createMuiTheme();
 export default function App() {
     const [apiConf, setApiConf] = React.useState(loadApiConfig());
     const [settings, updateSettings] = React.useState(loadSettings());
+    const [dates, setDates] = React.useState(getWeekArray(new Date()));
 
     const setAuth = (auth: {username: string, token: string} | null) => {
         saveAuth(auth);
@@ -69,7 +71,7 @@ export default function App() {
                         value={{apiConfig: apiConf, setAuth}}>
                         <Switch>
                             <PrivateRoute path="/app/main">
-                                <HoundsWeek />
+                                <HoundsWeek dates={dates} setDates={setDates} />
                             </PrivateRoute>
                             <Route path="/app/settings">
                                 <HoundsSettingsPage />

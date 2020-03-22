@@ -26,7 +26,9 @@ import {
     ArrowRight,
     Home,
 } from "@material-ui/icons";
-import {addDays, eachDayOfInterval, format} from "date-fns";
+import {addDays, format} from "date-fns";
+
+import {getWeekArray} from "./utils";
 
 import HoundsList from "./houndslist/HoundsList";
 import HoundsSidebar from "./HoundsSidebar";
@@ -53,25 +55,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-/**
- * Gets an array of dates Mon-Friday for the week
- * containing the date d given
- * @param {Date} d date inside the week to obtain
- * @return {Date[]} array containing dates in week
- */
-function getWeekArray(d: Date): Date[] {
-    const day = d.getDay();
-    // Monday is first day of week in this
-    const distFromMon = (day === 0 ? 7 : day) - 1;
-    const d0 = addDays(d, distFromMon * -1);
-    const d6 = addDays(d0, 7);
-    return eachDayOfInterval({
-        start: d0,
-        end: d6,
-    });
-}
-
 interface WeekProps {
+    dates: Date[],
+    setDates: (d: Date[]) => void,
 }
 
 /**
@@ -82,8 +68,9 @@ function HoundsWeek(props: WeekProps) {
     const classes = useStyles();
     const history = useHistory();
     const {apiConfig, setAuth} = React.useContext(ApiConfigContext);
-    const [dates, updateDates] = React.useState(getWeekArray(new Date()));
+
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
+
     const getWeek = async (d0: Date) => {
         try {
             const week = await api.getWeek(d0, apiConfig);
@@ -95,16 +82,19 @@ function HoundsWeek(props: WeekProps) {
             history.replace("/login");
         }
     };
-    const goToWeek = (d: Date) => {
-        const dArr = getWeekArray(d);
-        updateDates(dArr);
-        setDrawer(false);
-        getWeek(dArr[0]);
-    };
 
+    const goToWeek = (d: Date) => {
+        props.setDates(getWeekArray(d));
+    };
+    const nextWeek = () => {
+        goToWeek(addDays(props.dates[0], 7));
+    };
+    const prevWeek = () => {
+        goToWeek(addDays(props.dates[0], -7));
+    };
     React.useEffect(() => {
-        goToWeek(new Date());
-    }, []);
+        getWeek(props.dates[0]);
+    }, [props.dates]);
 
     const [drawerOpen, setDrawer] = React.useState(false);
     const toggleDrawer = () => setDrawer(!drawerOpen);
@@ -142,7 +132,7 @@ function HoundsWeek(props: WeekProps) {
     let mainview;
     if (week.length > 0) {
         mainview = <HoundsList className={classes.weekContainer}
-            dates={dates} weekList={week}/>;
+            dates={props.dates} weekList={week}/>;
     } else {
         mainview = <Grid container justify="center">
             <CircularProgress />
@@ -151,7 +141,7 @@ function HoundsWeek(props: WeekProps) {
 
     return <>
         <Drawer open={drawerOpen} onClose={toggleDrawer} anchor="left">
-            <HoundsSidebar initDate={dates[0]} onDateChange={goToWeek} />
+            <HoundsSidebar initDate={props.dates[0]} onDateChange={goToWeek} />
         </Drawer>
         <AppBar position="sticky" color="default">
             <Toolbar>
@@ -164,20 +154,19 @@ function HoundsWeek(props: WeekProps) {
                     direction="row">
                     <Typography variant="h4"
                         color="inherit">
-                        { format(dates[0], "LLL Y") }
+                        {
+                            /** TODO make cross week date correct */
+                            format(props.dates[0], "LLL Y")
+                        }
                     </Typography>
                 </Grid>
-                <IconButton onClick={() => goToWeek(addDays(dates[0], -7))}
-                    edge="end">
+                <IconButton onClick={prevWeek} edge="end">
                     <ArrowLeft />
                 </IconButton>
-                <IconButton onClick={() => {
-                    goToWeek(new Date());
-                }}
-                edge="end">
+                <IconButton onClick={() => goToWeek(new Date())} edge="end">
                     <Home />
                 </IconButton>
-                <IconButton onClick={() => goToWeek(addDays(dates[0], 7))}
+                <IconButton onClick={nextWeek}
                     edge="end">
                     <ArrowRight />
                 </IconButton>

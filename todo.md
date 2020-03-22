@@ -1,17 +1,28 @@
 # TODO List  
 
-[O] [1] "Dog Profiles" #UI #Backlog  
-[)] [1] "Document code that is already written" #codepractice  
-[_] [1] "refractor the styling to share some things" #codepractice  
-[_] [1] "Websocket connection for loading" #Backlog  
-[_] [1] "User control" #UI #Backlog  
-[_] [1] "Admin Page" #UI #Backlog  
-[_] [1] "Printing" #Backlog  
+[_] [1] "Tests" #codepractice
+    * Dog From
+    * Event Form
+    * Booking Form
+    * Next Week
+    * Prev Week
 [_] [1] "Event Editing in a nice way" #UI #improvements  
+[_] [1] "User admin route" #UI #Backlog  
+[O] [1] "Dog Profiles" #UI #Backlog  
+    * Booking functionality - edit/delete/see
+    * prototype for final versions
+    * rough sketch for 1.0 
+[_] [1] "Websocket connection for loading" #Backlog  
+    * Yank wrapper from old app
+[_] [1] "Document code that is already written" #codepractice  
+[_] [1] "Logging" #production
+[_] [1] "Printing" #Backlog  
+[_] [2] "refractor the styling to share some things" #codepractice  
 [_] [2] [notification thing][https://github.com/iamhosseindhv/notistack] #improvements  
 [_] [2] "Remove eslint-disable-next-line where possible" #codepractice  
 [_] [3] "Tagged Search" #poweruser  
-    * I.E. serachText="Moose clientName[Haley Rochford]" maybe diff syntax  
+    * I.E. serachText="Moose clientName[Haley Rochford]" maybe diff syntax client:Haley Rochford
+[_] [4] "Admin Page" "view logs (run sql queries) maybe, manage users" #dev
 
 ----
 

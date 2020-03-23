@@ -26,6 +26,7 @@ module.exports = {
     "rules": {
         "quotes": ["error", "double"],
         "indent": ["warn", 4],
+        "object-curly-spacing": ["warn", "always"],
         "valid-jsdoc": ["error", {
             "requireParamType": false,
             "requireReturnType": false,

@@ -26,17 +26,17 @@ import {
     ArrowRight,
     Home,
 } from "@material-ui/icons";
-import {addDays, format} from "date-fns";
+import { addDays, format } from "date-fns";
 
-import {getWeekArray} from "./utils";
+import { getWeekArray } from "./utils";
 
-import HoundsList from "./houndslist/HoundsList";
+import HoundsList from "./HoundsList";
 import HoundsSidebar from "./HoundsSidebar";
 import DogForm from "../../forms/DogForm";
 import EventForm from "../../forms/EventForm";
 import BookingForm from "../../forms/BookingForm";
-import {FormModal} from "../../components/FormModal";
-import {ApiConfigContext} from "../../contexts";
+import { FormModal } from "../../components/FormModal";
+import { ApiConfigContext } from "../../contexts";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 
@@ -67,7 +67,7 @@ interface WeekProps {
 function HoundsWeek(props: WeekProps) {
     const classes = useStyles();
     const history = useHistory();
-    const {apiConfig, setAuth} = React.useContext(ApiConfigContext);
+    const { apiConfig, setAuth } = React.useContext(ApiConfigContext);
 
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
 
@@ -123,9 +123,9 @@ function HoundsWeek(props: WeekProps) {
     });
     const modalFormOpen = (type?: "booking" | "dog" | "event") => {
         if (type) {
-            setModalForm({...FORM_METADATA[type], open: true});
+            setModalForm({ ...FORM_METADATA[type], open: true });
         } else {
-            setModalForm({...modalForm, open: true});
+            setModalForm({ ...modalForm, open: true });
         }
     };
 

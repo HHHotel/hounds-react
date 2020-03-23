@@ -2,7 +2,7 @@ import React from "react";
 import {
     makeStyles,
 } from "@material-ui/styles";
-import {format} from "date-fns";
+import { format } from "date-fns";
 import ListItem from "./item/ListItem";
 import {
     Card,
@@ -67,10 +67,10 @@ function HoundsList(props: IHoundsListProps) {
             direction="row"
             wrap="wrap">
             {
-                weekList.map((el, index) => (
-                    <DayCard key={index}
-                        el={el}
-                        date={props.dates[index]} />
+                weekList.map((events, index) => (
+                    <DayCard key={index} date={props.dates[index]}>
+                        {events}
+                    </DayCard>
                 ))
             }
         </Grid>
@@ -80,12 +80,11 @@ function HoundsList(props: IHoundsListProps) {
 export default HoundsList;
 
 interface IDayCardProps {
-    el: React.ReactElement,
     date: Date,
 }
 
 // eslint-disable-next-line
-function DayCard(props: IDayCardProps) {
+function DayCard(props: React.PropsWithChildren<IDayCardProps>) {
     const classes = useStyles();
     return <>
         <Grid className={classes.weekGridChild}
@@ -106,7 +105,7 @@ function DayCard(props: IDayCardProps) {
                 <Grid className={classes.dayList} container
                     wrap="nowrap"
                     direction="column">
-                    {props.el}
+                    {props.children}
                 </Grid>
             </Card>
         </Grid>

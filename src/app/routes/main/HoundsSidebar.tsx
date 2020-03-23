@@ -26,8 +26,8 @@ import {
     Link,
 } from "react-router-dom";
 
-import {HoundsSearch} from "../../components/HoundsSearch";
-import {ApiConfigContext} from "../../contexts";
+import { HoundsSearch } from "../../components/HoundsSearch";
+import { ApiConfigContext } from "../../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     sidebarCalender: {

@@ -27,7 +27,7 @@ import {
     LockOutlined,
 } from "@material-ui/icons";
 import * as api from "@happyhoundhotel/hounds-ts";
-import {ApiConfigContext, SettingsContext} from "../contexts";
+import { ApiConfigContext, SettingsContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     paper: {
@@ -64,20 +64,20 @@ interface LoginProps {
  */
 function HoundsLogin(props: LoginProps) {
     const classes = useStyles();
-    const {settings} = React.useContext(SettingsContext);
-    const {setAuth} = React.useContext(ApiConfigContext);
+    const { settings } = React.useContext(SettingsContext);
+    const { setAuth } = React.useContext(ApiConfigContext);
 
     const [user, setUser] = React.useState({} as any);
     const [loading, setLoading] = React.useState(false);
 
     const updateUsername = (ev: any) => {
-        setUser({...user, username: ev.target.value});
+        setUser({ ...user, username: ev.target.value });
     };
     const updatePassword = (ev: any) => {
-        setUser({...user, password: ev.target.value});
+        setUser({ ...user, password: ev.target.value });
     };
     const updateRemberMe = (ev: any) => {
-        setUser({...user, remember: ev.target.value});
+        setUser({ ...user, remember: ev.target.value });
     };
 
     const onSubmit = async (event: React.FormEvent) => {

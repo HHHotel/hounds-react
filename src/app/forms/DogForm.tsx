@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface DogFormProps {
-    onSubmit: () => void
+    onSubmit?: (dog: api.IHoundDog) => void
 }
 
 /**
@@ -47,18 +47,21 @@ function DogForm(props: DogFormProps) {
 
     const onSubmit = (event: FormEvent) => {
         event.preventDefault();
-
-        api.addDog({
+        const dog = {
             activeClient: true,
             id: "",
             name: dogName,
             clientName: clientName,
             bookings: [],
-        }, apiConfig);
-
+        };
         setDogName("");
         setClientName("");
-        props.onSubmit();
+
+        if (!props.onSubmit) {
+            api.addDog(dog, apiConfig);
+        } else {
+            props.onSubmit(dog);
+        }
     };
 
     return <form onSubmit={onSubmit}

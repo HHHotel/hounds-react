@@ -55,6 +55,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+const FORM_METADATA = {
+    "booking": {
+        title: "New Booking",
+        type: "booking",
+        open: false,
+    },
+    "dog": {
+        title: "New Dog",
+        type: "dog",
+        open: false,
+    },
+    "event": {
+        title: "New Event",
+        type: "event",
+        open: false,
+    },
+};
+
 interface WeekProps {
     dates: Date[],
     setDates: (d: Date[]) => void,
@@ -69,10 +87,11 @@ function HoundsWeek(props: WeekProps) {
     const history = useHistory();
     const { apiConfig, setAuth } = React.useContext(ApiConfigContext);
 
+    // Tracks Events as an array of weeks filled with events
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
-
-    const getWeek = async (d0: Date) => {
+    const getWeek = async () => {
         try {
+            const d0 = props.dates[0];
             const week = await api.getWeek(d0, apiConfig);
             updateWeek(week);
             console.log("Loaded week", d0.toDateString());
@@ -82,62 +101,33 @@ function HoundsWeek(props: WeekProps) {
             history.replace("/login");
         }
     };
-
-    const goToWeek = (d: Date) => {
-        props.setDates(getWeekArray(d));
-    };
-    const nextWeek = () => {
-        goToWeek(addDays(props.dates[0], 7));
-    };
-    const prevWeek = () => {
-        goToWeek(addDays(props.dates[0], -7));
-    };
-    React.useEffect(() => {
-        getWeek(props.dates[0]);
+    const goToWeek = (d: Date) => props.setDates(getWeekArray(d));
+    const nextWeek = () => goToWeek(addDays(props.dates[0], 7));
+    const prevWeek = () => goToWeek(addDays(props.dates[0], -7));
+    React.useEffect(() => { // Load week from api on render
+        getWeek();
     }, [props.dates]);
 
+    // Drawer state
     const [drawerOpen, setDrawer] = React.useState(false);
     const toggleDrawer = () => setDrawer(!drawerOpen);
 
-    const FORM_METADATA = {
-        "booking": {
-            title: "New Booking",
-            type: "booking",
-            open: false,
-        },
-        "dog": {
-            title: "New Dog",
-            type: "dog",
-            open: false,
-        },
-        "event": {
-            title: "New Event",
-            type: "event",
-            open: false,
-        },
-    };
+    // Modal state relies on object with form defaults
     const [modalForm, setModalForm] = React.useState(FORM_METADATA["booking"]);
-    const modalFormClose = () => setModalForm({
-        ...modalForm,
-        open: false,
-    });
+    const modalFormClose = () => setModalForm({ ...modalForm, open: false });
     const modalFormOpen = (type?: "booking" | "dog" | "event") => {
-        if (type) {
-            setModalForm({ ...FORM_METADATA[type], open: true });
-        } else {
-            setModalForm({ ...modalForm, open: true });
-        }
+        type &&
+         setModalForm({ ...FORM_METADATA[type], open: true }) ||
+         setModalForm({ ...modalForm, open: true });
     };
 
-    let mainview;
-    if (week.length > 0) {
-        mainview = <HoundsList className={classes.weekContainer}
-            dates={props.dates} weekList={week}/>;
-    } else {
-        mainview = <Grid container justify="center">
+    // Use loading circle when week has not loaded in
+    const mainview = week.length > 0 &&
+        <HoundsList className={classes.weekContainer}
+            dates={props.dates} weekList={week}/> ||
+        <Grid container justify="center">
             <CircularProgress />
         </Grid>;
-    }
 
     return <>
         <Drawer open={drawerOpen} onClose={toggleDrawer} anchor="left">
@@ -184,7 +174,7 @@ function HoundsWeek(props: WeekProps) {
             case "booking":
                 return <BookingForm onSubmit={modalFormClose}/>;
             case "dog":
-                return <DogForm onSubmit={modalFormClose}/>;
+                return <DogForm />;
             case "event":
                 return <EventForm onSubmit={modalFormClose}/>;
             default:
@@ -201,8 +191,12 @@ function HoundsWeek(props: WeekProps) {
 }
 export default HoundsWeek;
 
+interface AddMenuProps {
+    openModal: (type?: "booking" | "dog" | "event") => void
+}
+
 // eslint-disable-next-line
-function AddMenu({openModal}: any) {
+function AddMenu({openModal}: AddMenuProps) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 

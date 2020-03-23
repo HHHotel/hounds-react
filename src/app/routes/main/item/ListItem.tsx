@@ -3,11 +3,11 @@ import {
     Link,
 } from "react-router-dom";
 
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 import "./ListItem.css";
-import {SettingsContext} from "../../../../contexts";
+import { SettingsContext } from "../../../contexts";
 
 interface IListItemProps {
     sevent: api.IScheduleEvent
@@ -37,7 +37,7 @@ function ListItem(props: IListItemProps) {
  * @return {string} event text
  */
 function getEventText(sevent: api.IScheduleEvent) {
-    const {settings} = React.useContext(SettingsContext);
+    const { settings } = React.useContext(SettingsContext);
     if (!sevent.startDate || !sevent.endDate) {
         return sevent.text;
     }
@@ -54,7 +54,7 @@ function getEventText(sevent: api.IScheduleEvent) {
     }
 
     const prepend = sevent.startDate &&
-        api.getTimePrepend({...sevent, endDate: end});
+        api.getTimePrepend({ ...sevent, endDate: end });
     return `${prepend} ${sevent.text}`;
 }
 

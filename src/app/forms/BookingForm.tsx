@@ -6,8 +6,8 @@ import {
 } from "date-fns";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {HoundsSearch} from "../components/HoundsSearch";
-import {ApiConfigContext} from "../contexts";
+import { HoundsSearch } from "../components/HoundsSearch";
+import { ApiConfigContext } from "../contexts";
 import DogEventForm from "./DogEventForm";
 import RepeatEventForm from "./RepeatEventForm";
 // eslint-disable-next-line
@@ -24,7 +24,7 @@ interface BookingFormProps {
 function BookingForm(props: BookingFormProps) {
     const [formIndex, setFormIndex] = React.useState(0);
     const [booking, setBooking] = React.useState({} as api.IHoundEvent);
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const { apiConfig } = React.useContext(ApiConfigContext);
 
     const onSelectDog = (dog: api.IHoundDog | api.IHoundEvent) => {
         dog = dog as api.IHoundDog;

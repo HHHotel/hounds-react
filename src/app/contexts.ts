@@ -23,8 +23,8 @@ export const loadSettings = (): HoundsSettings => {
     const defaultSettings = {
         apiUrl: `${window.location.protocol}//${window.location.host}`,
         hours: {
-            opening: {am: 8, pm: 16},
-            closing: {am: 10, pm: 18},
+            opening: { am: 8, pm: 16 },
+            closing: { am: 10, pm: 18 },
             eventTimeStep: 5,
         },
     };

@@ -15,7 +15,7 @@ import {
 
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import {ApiConfigContext} from "../../contexts";
+import { ApiConfigContext } from "../../contexts";
 
 import BookingList from "./bookings/BookingsList";
 import HoundsNav from "../../components/HoundsNav";
@@ -36,8 +36,8 @@ interface ListProps {
 function DogProfile(props: ListProps) {
     // const classes = useStyles();
     const [dog, setDog] = React.useState({} as api.IHoundDog);
-    const {apiConfig} = React.useContext(ApiConfigContext);
-    const {dogId} = useParams();
+    const { apiConfig } = React.useContext(ApiConfigContext);
+    const { dogId } = useParams();
 
     const updateDog = async () => {
         const id = props.dogId || dogId;

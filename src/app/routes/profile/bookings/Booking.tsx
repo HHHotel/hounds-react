@@ -57,7 +57,7 @@ function Booking(props: BookingProps) {
                 <div className={classes.bookingLabel}>
                     { props.data.type === "boarding" && <DateRange /> }
                     { props.data.type === "daycare" && <Today /> }
-                    <div style={{width: "0.5rem"}} />
+                    <div style={{ width: "0.5rem" }} />
                     <Typography variant="overline" >
                         { formatBookingDates(props.data) }
                     </Typography>

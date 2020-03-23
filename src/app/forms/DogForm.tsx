@@ -18,7 +18,7 @@ import {
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
 
-import {ApiConfigContext} from "../contexts";
+import { ApiConfigContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -43,7 +43,7 @@ function DogForm(props: DogFormProps) {
 
     const [dogName, setDogName] = React.useState("");
     const [clientName, setClientName] = React.useState("");
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const { apiConfig } = React.useContext(ApiConfigContext);
 
     const onSubmit = (event: FormEvent) => {
         event.preventDefault();

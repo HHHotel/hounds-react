@@ -54,7 +54,7 @@ function HoundsNavBar(props: HoundsNavBarProps) {
  * @param params params
  * @return {React.ReactElement} el
  */
-function BackLink({children}: React.ComponentProps<"div">): React.ReactElement {
+function BackLink({ children }: React.ComponentProps<"div">): React.ReactElement {
     const history = useHistory();
     return <div onClick={history.goBack}>
         {children}

@@ -18,7 +18,7 @@ import {
 } from "@material-ui/pickers";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {ApiConfigContext, SettingsContext} from "../contexts";
+import { ApiConfigContext, SettingsContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -47,12 +47,12 @@ interface EventFormProps {
  * */
 function EventForm(props: EventFormProps) {
     const classes = useStyles();
-    const {settings} = React.useContext(SettingsContext);
+    const { settings } = React.useContext(SettingsContext);
     const [start, setStart] = React.useState(null as any);
     const [end, setEnd] = React.useState(null as any);
     const [text, setText] = React.useState("");
     const [type, setType] = React.useState("general");
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const { apiConfig } = React.useContext(ApiConfigContext);
 
     const updateStart = (ustart: Date | null) => {
         if (!ustart) {

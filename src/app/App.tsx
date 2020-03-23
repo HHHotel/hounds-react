@@ -5,8 +5,8 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 
 import "./App.css";
@@ -29,7 +29,7 @@ import HoundsLogin from "./routes/Login";
 import HoundsWeek from "./routes/main/HoundsWeek";
 import HoundsSettingsPage from "./routes/HoundsSettings";
 import DogProfile from "./routes/profile/Profile";
-import {getWeekArray} from "./routes/main/utils";
+import { getWeekArray } from "./routes/main/utils";
 
 const theme = createMuiTheme();
 
@@ -68,7 +68,7 @@ export default function App() {
                     setSettings: saveSettings,
                 }}>
                     <ApiConfigContext.Provider
-                        value={{apiConfig: apiConf, setAuth}}>
+                        value={{ apiConfig: apiConf, setAuth }}>
                         <Switch>
                             <PrivateRoute path="/app/main">
                                 <HoundsWeek dates={dates} setDates={setDates} />
@@ -101,12 +101,12 @@ export default function App() {
  * @param {any} props properties
  * @return {React.ReactElement} el
  */
-function PrivateRoute({children, ...rest}: any) {
-    const {apiConfig} = React.useContext(ApiConfigContext);
+function PrivateRoute({ children, ...rest }: any) {
+    const { apiConfig } = React.useContext(ApiConfigContext);
     return (
         <Route
             {...rest}
-            render={({location}: any) =>
+            render={({ location }: any) =>
                 apiConfig.apiAuth ?
                     (
                         children
@@ -114,7 +114,7 @@ function PrivateRoute({children, ...rest}: any) {
                         <Redirect
                             to={{
                                 pathname: "/login",
-                                state: {from: location},
+                                state: { from: location },
                             }}
                         />
                     )

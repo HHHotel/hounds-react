@@ -25,7 +25,7 @@ import {
     format,
 } from "date-fns";
 
-import {ApiConfigContext} from "../contexts";
+import { ApiConfigContext } from "../contexts";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 
@@ -90,7 +90,7 @@ export function HoundsSearch(props: SearchProps) {
     const classes = useStyles();
     const [searchText, updateSearch] = React.useState("");
     const [results, updateResults] = React.useState([]);
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const { apiConfig } = React.useContext(ApiConfigContext);
     const filter = props.filter ? props.filter : () => true;
 
     const search = async () => {
@@ -114,7 +114,7 @@ export function HoundsSearch(props: SearchProps) {
                     root: classes.inputRoot,
                     input: classes.inputInput,
                 }}
-                inputProps={{"aria-label": "search"}}/>
+                inputProps={{ "aria-label": "search" }}/>
 
             <Button variant="contained"
                 onClick={() => search()}>
@@ -173,13 +173,13 @@ const ResultCard = (props: ResultCardProps) => {
             alignContent="space-between"
             justify="space-between"
             direction="row">
-            <div style={{flexGrow: 10}}>
+            <div style={{ flexGrow: 10 }}>
                 <Typography variant="h6">
                     {getHeadingText()}
                 </Typography>
                 <Divider />
                 <Typography variant="subtitle1"
-                    style={{fontStyle: "italic"}}>
+                    style={{ fontStyle: "italic" }}>
                     {getSubtitleText()}
                 </Typography>
             </div>

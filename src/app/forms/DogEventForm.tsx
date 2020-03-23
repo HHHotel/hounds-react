@@ -23,7 +23,7 @@ import {
 } from "date-fns";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
-import {SettingsContext} from "../contexts";
+import { SettingsContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -52,7 +52,7 @@ interface DogEventForm {
  * */
 function DogEventForm(props: any) {
     const classes = useStyles();
-    const {settings} = React.useContext(SettingsContext);
+    const { settings } = React.useContext(SettingsContext);
     const [start, setStart] = React.useState(null as any);
     const [end, setEnd] = React.useState(null as any);
     const [type, setType] = React.useState("boarding");

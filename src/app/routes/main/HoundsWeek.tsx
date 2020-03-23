@@ -116,9 +116,8 @@ function HoundsWeek(props: WeekProps) {
     const [modalForm, setModalForm] = React.useState(FORM_METADATA["booking"]);
     const modalFormClose = () => setModalForm({ ...modalForm, open: false });
     const modalFormOpen = (type?: "booking" | "dog" | "event") => {
-        type &&
-         setModalForm({ ...FORM_METADATA[type], open: true }) ||
-         setModalForm({ ...modalForm, open: true });
+        const data = type ? FORM_METADATA[type] : modalForm;
+        setModalForm({ ...data, open: true });
     };
 
     // Use loading circle when week has not loaded in
@@ -164,30 +163,24 @@ function HoundsWeek(props: WeekProps) {
         </AppBar>
         {mainview}
         <AddMenu openModal={modalFormOpen}/>
-        <FormModals />
-    </>;
-
-    // eslint-disable-next-line
-    function FormModals() {
-        const GetTypedModal = () => {
-            switch (modalForm.type) {
-            case "booking":
-                return <BookingForm onSubmit={modalFormClose}/>;
-            case "dog":
-                return <DogForm />;
-            case "event":
-                return <EventForm onSubmit={modalFormClose}/>;
-            default:
-                return null;
-            }
-        };
-        return <FormModal disableDrag={true}
+        <FormModal disableDrag={true}
             open={modalForm.open}
             onClose={modalFormClose}
             title={modalForm.title}>
-            <GetTypedModal />
-        </FormModal>;
-    }
+            {function getTypedForm() {
+                switch (modalForm.type) {
+                case "booking":
+                    return <BookingForm onSubmit={modalFormClose}/>;
+                case "dog":
+                    return <DogForm />;
+                case "event":
+                    return <EventForm onSubmit={modalFormClose}/>;
+                default:
+                    return <></>;
+                }
+            }()}
+        </FormModal>
+    </>;
 }
 export default HoundsWeek;
 

@@ -102,9 +102,8 @@ function HoundsLogin(props: LoginProps) {
             );
             return setAuth(auth);
         } catch (err) {
-            setFailed(true);
-        } finally {
             setLoading(false);
+            setFailed(true);
         }
     };
 

@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Link,
-    useHistory,
 } from "react-router-dom";
 import {
     makeStyles,
@@ -11,6 +10,7 @@ import {
     CssBaseline,
     Avatar,
     Typography,
+    OutlinedInput,
     Grid,
     TextField,
     FormControlLabel,
@@ -21,10 +21,15 @@ import {
     CircularProgress,
     // eslint-disable-next-line
     Theme,
+    InputAdornment,
+    InputLabel,
+    FormControl,
+    FormHelperText,
 } from "@material-ui/core";
 import {
     Settings,
     LockOutlined,
+    Visibility,
 } from "@material-ui/icons";
 import * as api from "@happyhoundhotel/hounds-ts";
 import { ApiConfigContext, SettingsContext } from "../contexts";
@@ -69,6 +74,11 @@ function HoundsLogin(props: LoginProps) {
 
     const [user, setUser] = React.useState({} as any);
     const [loading, setLoading] = React.useState(false);
+    const [passHidden, setPassHidden] = React.useState(true);
+    const [loginFailed, setFailed] = React.useState(false);
+
+    const showPass = () => setPassHidden(false);
+    const hidePass = () => setPassHidden(true);
 
     const updateUsername = (ev: any) => {
         setUser({ ...user, username: ev.target.value });
@@ -82,6 +92,7 @@ function HoundsLogin(props: LoginProps) {
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        setFailed(false);
         setLoading(true);
         try {
             const auth = await api.login(
@@ -89,11 +100,10 @@ function HoundsLogin(props: LoginProps) {
                 user.password,
                 settings.apiUrl,
             );
-            setLoading(false);
             return setAuth(auth);
         } catch (err) {
-            console.error(err);
-            alert("Login failed: " + err.message);
+            setFailed(true);
+        } finally {
             setLoading(false);
         }
     };
@@ -120,18 +130,30 @@ function HoundsLogin(props: LoginProps) {
                     name="username"
                     autoComplete="hounds-username"
                     autoFocus
+                    error={loginFailed}
                 />
-                <TextField onChange={updatePassword}
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                />
+                <FormControl required variant="outlined" fullWidth >
+                    <InputLabel>Password</InputLabel>
+                    <OutlinedInput onChange={updatePassword}
+                        name="password"
+                        label = "Password"
+                        type={passHidden ? "password" : "text"}
+                        error={loginFailed}
+                        id="password"
+                        autoComplete="current-password"
+                        endAdornment = {
+                            <InputAdornment position="end">
+                                <IconButton onMouseDown={showPass}
+                                    onMouseUp={hidePass}>
+                                    <Visibility />
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                    <FormHelperText error={loginFailed}>
+                        {loginFailed && "Login Failed"}
+                    </FormHelperText>
+                </FormControl>
                 <FormControlLabel
                     control={
                         <Checkbox onChange={updateRemberMe}

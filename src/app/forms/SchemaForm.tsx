@@ -1,6 +1,8 @@
+export const add = (a: number, b: number) => {
+    return a + b;
+};
+
 /*
-
-
 Right now i do this:
     <FormModal>
         if (thisthing) {
@@ -13,7 +15,7 @@ Right now i do this:
 I want to do this
 
 const formSchema = {
-    dogName: Form.string, // WIP i need type information to map the correct input
+    dogName: Form.string,// WIP i need type information to map the correct input
     clientName: Form.string,
 }
 

@@ -9,7 +9,7 @@ import {
     FormControl,
     Grid,
     Button,
-    NativeSelect,
+    Select,
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
@@ -87,15 +87,16 @@ function DogEventForm(props: any) {
 
     return <form onSubmit={onSubmit}
         className={classes.formWrapper}>
-        <FormControl>
+        <FormControl margin="normal">
             <InputLabel>Type</InputLabel>
-            <NativeSelect onChange={(ev: any) => setType(ev.target.value)}
+            <Select onChange={(ev: any) => setType(ev.target.value)}
+                native
                 value={type}
                 required
                 variant="outlined">
                 <option>boarding</option>
                 <option>daycare</option>
-            </NativeSelect>
+            </Select>
         </FormControl>
         <Grid container
             justify="center"
@@ -103,6 +104,7 @@ function DogEventForm(props: any) {
             direction="row">
             <DateTimePicker className={classes.dateInputs}
                 minutesStep={settings.eventTimeStep}
+                inputVariant="outlined"
                 required
                 variant="inline"
                 label="Start"
@@ -113,6 +115,7 @@ function DogEventForm(props: any) {
                 (<>
                     <TimePicker className={classes.dateInputs}
                         minutesStep={settings.eventTimeStep}
+                        inputVariant="outlined"
                         required
                         variant="inline"
                         label="End"
@@ -130,6 +133,7 @@ function DogEventForm(props: any) {
                 </>
                 ) : (
                     <DateTimePicker className={classes.dateInputs}
+                        inputVariant="outlined"
                         minutesStep={settings.eventTimeStep}
                         required
                         variant="inline"

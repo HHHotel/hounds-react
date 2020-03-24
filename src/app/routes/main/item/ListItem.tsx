@@ -8,6 +8,7 @@ import { Typography } from "@material-ui/core";
 import * as api from "@happyhoundhotel/hounds-ts";
 import "./ListItem.css";
 import { SettingsContext } from "../../../contexts";
+import { isEqual } from "date-fns";
 
 interface IListItemProps {
     sevent: api.IScheduleEvent
@@ -42,6 +43,11 @@ function getEventText(sevent: api.IScheduleEvent) {
         return sevent.text;
     }
 
+    if (!isEqual(sevent.startDate, sevent.endDate)) {
+        const prepend = api.getTimePrepend(sevent);
+        return `${prepend} ${sevent.text}`;
+    }
+
     const end = new Date(sevent.endDate);
     // Set event end for events that should default to opening -> closing
     switch (sevent.startDate.getHours()) {
@@ -52,9 +58,7 @@ function getEventText(sevent: api.IScheduleEvent) {
         end.setHours(settings.hours.closing.pm);
         break;
     }
-
-    const prepend = sevent.startDate &&
-        api.getTimePrepend({ ...sevent, endDate: end });
+    const prepend = api.getTimePrepend({ ...sevent, endDate: end });
     return `${prepend} ${sevent.text}`;
 }
 

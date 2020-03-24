@@ -14,7 +14,7 @@ import RepeatEventForm from "./RepeatEventForm";
 import {RepeatOpts} from "./RepeatEventForm";
 
 interface BookingFormProps {
-    onSubmit: () => void
+    onSubmit?: (booking: api.IHoundBooking) => void
 }
 
 /**
@@ -41,6 +41,12 @@ function BookingForm(props: BookingFormProps) {
     };
 
     const onSubmitBooking = (ev: api.IHoundEvent, repeat: boolean) => {
+        const newBooking = {
+            dogId: booking.id,
+            ...booking,
+            ...ev,
+        };
+
         if (differenceInMilliseconds(ev.endDate, ev.startDate) < 0) {
             // TODO popup toast w/ error
             return;
@@ -51,22 +57,15 @@ function BookingForm(props: BookingFormProps) {
             return;
         }
         if (!repeat) { // one event just call the api and exit
-            api.addEvent({
-                ...booking,
-                ...ev,
-            }, apiConfig);
-            console.log({
-                ...booking,
-                ...ev,
-            });
-            props.onSubmit();
+            if (props.onSubmit) {
+                props.onSubmit(newBooking);
+            } else {
+                api.addEvent(newBooking, apiConfig);
+            }
             return;
         }
 
-        setBooking({
-            ...booking,
-            ...ev,
-        });
+        setBooking(newBooking);
         setFormIndex(2);
     };
 
@@ -84,8 +83,6 @@ function BookingForm(props: BookingFormProps) {
                 endDate: opts.incFunc(ev.endDate),
             };
         }
-
-        props.onSubmit();
         console.log(opts);
         console.log(evlist);
     };

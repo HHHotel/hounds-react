@@ -12,6 +12,7 @@
     "bufferutil": "^4.0.1",
     "canvas": "^2.5.0",
     "date-fns": "^2.10.0",
+    "identity-obj-proxy": "^3.0.0",
     "jsdom": "^15.2.1",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",

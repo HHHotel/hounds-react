@@ -95,6 +95,7 @@ function HoundsWeek(props: WeekProps) {
             const week = await api.getWeek(d0, apiConfig);
             updateWeek(week);
             console.log("Loaded week", d0.toDateString());
+            console.log(week);
         } catch (er) {
             console.error(er);
             setAuth(null);
@@ -170,11 +171,11 @@ function HoundsWeek(props: WeekProps) {
             {function getTypedForm() {
                 switch (modalForm.type) {
                 case "booking":
-                    return <BookingForm onSubmit={modalFormClose}/>;
+                    return <BookingForm />;
                 case "dog":
                     return <DogForm />;
                 case "event":
-                    return <EventForm onSubmit={modalFormClose}/>;
+                    return <EventForm />;
                 default:
                     return <></>;
                 }

@@ -73,7 +73,6 @@ function HoundsSettings(props: SettingsProps) {
                         label="API URL"
                         autoFocus
                     />
-
                     <TimePicker label="Opening AM"
                         inputVariant="outlined"
                         views={["hours"]}

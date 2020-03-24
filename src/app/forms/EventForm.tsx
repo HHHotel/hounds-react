@@ -7,6 +7,7 @@ import {
     Grid,
     Button,
     TextField,
+    InputLabel,
     Select,
     // eslint-disable-next-line
     Theme,
@@ -19,6 +20,7 @@ import {
 
 import * as api from "@happyhoundhotel/hounds-ts";
 import { ApiConfigContext, SettingsContext } from "../contexts";
+import { startOfDay, differenceInMilliseconds, addMilliseconds } from "date-fns";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface EventFormProps {
-    onSubmit: () => void
+    onSubmit?: (ev: api.IHoundEvent) => void
 }
 
 /**
@@ -69,20 +71,26 @@ function EventForm(props: EventFormProps) {
 
     const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-
-        api.addEvent({
+        const isolateTime = (d: Date) =>
+            differenceInMilliseconds(d, startOfDay(d));
+        const uend = addMilliseconds(startOfDay(start), isolateTime(end));
+        const ev = {
             id: "",
             startDate: start as any as Date,
-            endDate: end as any as Date,
+            endDate: uend,
             text,
             type,
-        }, apiConfig);
-
+        };
         setStart(null);
         setEnd(null);
         setText("");
         setType("general");
-        props.onSubmit();
+
+        if (props.onSubmit) {
+            props.onSubmit(ev);
+        } else {
+            api.addEvent(ev, apiConfig);
+        }
     };
 
     return <form onSubmit={onSubmit}
@@ -102,15 +110,26 @@ function EventForm(props: EventFormProps) {
             alignContent="center"
             direction="row">
             <DateTimePicker className={classes.dateInputs}
+                inputVariant="outlined"
+                name="startDate"
+                aria-label="Start Date"
+                data-testid="start-date"
                 required
                 minutesStep={settings.eventTimeStep}
                 variant="inline"
                 label="Start"
-                onChange={(nval) => updateStart(nval)}
+                onChange={(nval) => {
+                    updateStart(nval);
+                    console.log("NEW START DATE:", nval);
+                }}
                 value={start}
             />
             <TimePicker className={classes.dateInputs}
                 minutesStep={settings.eventTimeStep}
+                inputVariant="outlined"
+                name="endDate"
+                aria-label="End Date"
+                data-testid="end-date"
                 required
                 variant="inline"
                 label="End"
@@ -119,8 +138,10 @@ function EventForm(props: EventFormProps) {
             />
         </Grid>
         <FormControl>
-            <Select label="Type"
-                native
+            <InputLabel>Type</InputLabel>
+            <Select native
+                aria-label="Event Type"
+                data-testid="event-type"
                 required
                 variant="outlined">
                 <option>general</option>

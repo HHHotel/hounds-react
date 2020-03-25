@@ -8,7 +8,7 @@ test("Loads and displays form", () => {
     const click = jest.fn();
 
     const { queryByText, queryByLabelText } = render(
-        <DogForm onSubmit={click} />,
+        <DogForm onSubmit={click} />
     );
 
     const submitButton = queryByText(/submit/i);
@@ -34,17 +34,15 @@ test("Creates proper dog object", () => {
     };
 
     const { queryByText, queryByLabelText } = render(
-        <DogForm onSubmit={click} />,
+        <DogForm onSubmit={click} />
     );
     const nameInput = queryByLabelText(/dog name/i);
     const clientInput = queryByLabelText(/client name/i);
     const submitButton = queryByText(/submit/i);
 
     nameInput && fireEvent.change(nameInput, { target: { value: "Moose R" } });
-    clientInput && fireEvent.change(
-        clientInput,
-        { target: { value: "Haley Rochford" } },
-    );
+    clientInput &&
+        fireEvent.change(clientInput, { target: { value: "Haley Rochford" } });
     submitButton && fireEvent.click(submitButton);
 });
 

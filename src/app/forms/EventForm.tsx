@@ -8,7 +8,7 @@ import {
     InputLabel,
     Select,
     // eslint-disable-next-line
-    Theme
+    Theme,
 } from "@material-ui/core";
 
 import { KeyboardDateTimePicker, TimePicker } from "@material-ui/pickers";
@@ -18,7 +18,7 @@ import { ApiConfigContext, SettingsContext } from "../contexts";
 import {
     startOfDay,
     differenceInMilliseconds,
-    addMilliseconds
+    addMilliseconds,
 } from "date-fns";
 import { MaterialUiPickersDate as OptDate } from "@material-ui/pickers/typings/date";
 
@@ -28,15 +28,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignContent: "center"
+        alignContent: "center",
     },
     formItem: {
-        margin: theme.spacing(1, 0)
+        margin: theme.spacing(1, 0),
     },
     dateInputs: {
         margin: theme.spacing(0, 1, 1, 1),
-        width: "45%"
-    }
+        width: "45%",
+    },
 }));
 
 interface EventFormProps {
@@ -85,7 +85,7 @@ function EventForm(props: EventFormProps) {
             startDate: (start as any) as Date,
             endDate: uend,
             text,
-            type
+            type,
         };
     };
 

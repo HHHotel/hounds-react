@@ -5,7 +5,7 @@ import {
     fireEvent,
     cleanup,
     screen,
-    RenderResult
+    RenderResult,
 } from "@testing-library/react";
 // eslint-disable-next-line
 import * as api from "@happyhoundhotel/hounds-ts";
@@ -74,4 +74,10 @@ describe("New event form", () => {
     // });
 });
 
-afterEach(cleanup);
+// expect(click).toBeCalledWith({
+//     type: "grooming",
+//     text: "testing",
+//     startDate: new Date("10-10-1919"),
+//     endDate: new Date("10-10-1919 8:00"),
+//     id: ""
+// });

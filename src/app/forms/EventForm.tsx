@@ -114,6 +114,7 @@ function EventForm(props: EventFormProps) {
                 id="eventText"
                 label="Event Text"
                 name="eventText"
+                inputProps={{ "data-testid": "event-text" }}
                 value={text}
                 onChange={updateText}
             />
@@ -155,7 +156,7 @@ function EventForm(props: EventFormProps) {
                 <Select
                     native
                     aria-label="Event Type"
-                    data-testid="event-type"
+                    inputProps={{ "data-testid": "event-type" }}
                     name="eventType"
                     required
                     variant="outlined"
@@ -171,6 +172,7 @@ function EventForm(props: EventFormProps) {
                 </Select>
             </FormControl>
             <Button
+                data-testid="event-submit-button"
                 className={classes.formItem}
                 variant="contained"
                 type="submit"

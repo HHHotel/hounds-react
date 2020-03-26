@@ -1,5 +1,4 @@
 import React from "react";
-import { act } from "react-dom/test-utils";
 import EventForm from "../EventForm";
 import { render, fireEvent, cleanup } from "@testing-library/react";
 // eslint-disable-next-line
@@ -7,7 +6,6 @@ import * as api from "@happyhoundhotel/hounds-ts";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import TestRenderer from "react-test-renderer";
 
 const submitMock = jest.fn();
 const element = ( // TODO Wrap becomes a shared util

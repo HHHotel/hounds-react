@@ -64,7 +64,7 @@ function EventForm(props: EventFormProps) {
         const uend = addMilliseconds(startOfDay(s), isolateTime(e));
         return {
             id: props.initEvent?.id ?? "",
-            startDate: (start as any) as Date,
+            startDate: (s as any) as Date,
             endDate: uend,
             text,
             type,

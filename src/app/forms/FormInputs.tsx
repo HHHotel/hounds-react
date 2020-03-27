@@ -19,9 +19,7 @@ import classes from "*.module.css";
 interface BoundInput<T> {
     bind: [T, React.Dispatch<React.SetStateAction<T>>];
 }
-interface TextInputProps
-    extends Partial<BaseTextFieldProps>,
-        BoundInput<string> {}
+type TextInputProps = Partial<BaseTextFieldProps> & BoundInput<string>;
 export const TextInput = ({
     required,
     name,
@@ -41,9 +39,7 @@ export const TextInput = ({
         onChange={(ev) => bind[1](ev.target.value)}
     />
 );
-interface DateInputProps
-    extends Partial<DateTimePickerProps>,
-        BoundInput<Date | null> {}
+type DateInputProps = Partial<DateTimePickerProps> & BoundInput<Date | null>;
 export const DateTimeInput = ({
     required,
     name,
@@ -68,9 +64,7 @@ export const DateTimeInput = ({
     );
 };
 
-interface TimeInputProps
-    extends Partial<TimePickerProps>,
-        BoundInput<Date | null> {}
+type TimeInputProps = Partial<TimePickerProps> & BoundInput<Date | null>;
 export const TimeInput = ({
     required,
     label,
@@ -83,6 +77,7 @@ export const TimeInput = ({
     const { settings } = React.useContext(SettingsContext);
     return (
         <TimePicker
+            {...rest}
             minutesStep={settings.eventTimeStep}
             inputVariant="outlined"
             name={name}
@@ -96,7 +91,7 @@ export const TimeInput = ({
     );
 };
 
-interface SelectInputProps extends Partial<SelectProps>, BoundInput<string> {}
+type SelectInputProps = Partial<SelectProps> & BoundInput<string>;
 export const SelectInput = ({
     required,
     label,
@@ -108,6 +103,7 @@ export const SelectInput = ({
     <FormControl>
         <InputLabel>{label}</InputLabel>
         <Select
+            {...rest}
             required={required}
             native
             variant="outlined"

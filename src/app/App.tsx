@@ -30,6 +30,7 @@ import HoundsWeek from "./routes/main/HoundsWeek";
 import HoundsSettingsPage from "./routes/HoundsSettings";
 import DogProfile from "./routes/profile/Profile";
 import { getWeekArray } from "./routes/main/utils";
+import Form from "./forms/Form";
 
 const theme = createMuiTheme();
 
@@ -42,7 +43,7 @@ export default function App() {
     const [settings, updateSettings] = React.useState(loadSettings());
     const [dates, setDates] = React.useState(getWeekArray(new Date()));
 
-    const setAuth = (auth: {username: string, token: string} | null) => {
+    const setAuth = (auth: { username: string; token: string } | null) => {
         saveAuth(auth);
         setApiConf({
             ...apiConf,
@@ -60,39 +61,60 @@ export default function App() {
         });
     }, []);
 
-    return <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Router>
-            <ThemeProvider theme={theme}>
-                <SettingsContext.Provider value={{
-                    settings,
-                    setSettings: saveSettings,
-                }}>
-                    <ApiConfigContext.Provider
-                        value={{ apiConfig: apiConf, setAuth }}>
-                        <Switch>
-                            <PrivateRoute path="/app/main">
-                                <HoundsWeek dates={dates} setDates={setDates} />
-                            </PrivateRoute>
-                            <Route path="/app/settings">
-                                <HoundsSettingsPage />
-                            </Route>
-                            <Route path="/app/profile/:dogId">
-                                <DogProfile />
-                            </Route>
-                            <Route path="/login">
-                                {apiConf.apiAuth ?
-                                    <Redirect to={"/app/main"} /> :
-                                    <HoundsLogin />}
-                            </Route>
-                            <Route path="*">
-                                <Redirect to="/app/main" />
-                            </Route>
-                        </Switch>
-                    </ApiConfigContext.Provider>
-                </SettingsContext.Provider>
-            </ThemeProvider>
-        </Router>
-    </MuiPickersUtilsProvider>;
+    return (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Router>
+                <ThemeProvider theme={theme}>
+                    <SettingsContext.Provider
+                        value={{
+                            settings,
+                            setSettings: saveSettings,
+                        }}
+                    >
+                        <ApiConfigContext.Provider
+                            value={{ apiConfig: apiConf, setAuth }}
+                        >
+                            <Switch>
+                                <PrivateRoute path="/app/main">
+                                    <HoundsWeek
+                                        dates={dates}
+                                        setDates={setDates}
+                                    />
+                                </PrivateRoute>
+                                <Route path="/app/settings">
+                                    <HoundsSettingsPage />
+                                </Route>
+                                <Route path="/app/profile/:dogId">
+                                    <DogProfile />
+                                </Route>
+                                <Route path="/login">
+                                    {apiConf.apiAuth ? (
+                                        <Redirect to={"/app/main"} />
+                                    ) : (
+                                        <HoundsLogin />
+                                    )}
+                                </Route>
+                                <Route path="/test">
+                                    <Form
+                                        schema={{
+                                            data: new Map([
+                                                ["dogName", "string"],
+                                                ["clientName", "string"],
+                                            ]),
+                                        }}
+                                        onSubmit={console.log}
+                                    ></Form>
+                                </Route>
+                                <Route path="*">
+                                    <Redirect to="/app/main" />
+                                </Route>
+                            </Switch>
+                        </ApiConfigContext.Provider>
+                    </SettingsContext.Provider>
+                </ThemeProvider>
+            </Router>
+        </MuiPickersUtilsProvider>
+    );
 }
 
 /**
@@ -107,17 +129,16 @@ function PrivateRoute({ children, ...rest }: any) {
         <Route
             {...rest}
             render={({ location }: any) =>
-                apiConfig.apiAuth ?
-                    (
-                        children
-                    ) : (
-                        <Redirect
-                            to={{
-                                pathname: "/login",
-                                state: { from: location },
-                            }}
-                        />
-                    )
+                apiConfig.apiAuth ? (
+                    children
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/login",
+                            state: { from: location },
+                        }}
+                    />
+                )
             }
         />
     );

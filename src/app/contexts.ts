@@ -57,18 +57,32 @@ export const loadApiConfig = (): api.IHoundsConfig => {
     };
 };
 
-export const storeAuth = (auth: { username: string; token: string } | null) => {
-    sessionStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+export const clearAuth = () => {
+    sessionStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(AUTH_KEY);
 };
 
-export const saveAuth = (auth: { username: string; token: string } | null) => {
-    localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+/**
+ * Saves the authentication details either to local or session storage
+ * @param auth authentication details for the api
+ * @param remember whether or not to store across sessions
+ * @returns nothing
+ */
+export const setAuth = (
+    auth: { username: string; token: string } | null,
+    remember?: boolean
+) => {
+    if (remember) {
+        localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+    }
+    sessionStorage.setItem(AUTH_KEY, JSON.stringify(auth));
 };
 
 export const ApiConfigContext = React.createContext({
     apiConfig: loadApiConfig(),
-    setAuth: saveAuth,
+    updateApiAuth: setAuth,
 });
+
 export const SettingsContext = React.createContext({
     settings: loadSettings(),
     setSettings,

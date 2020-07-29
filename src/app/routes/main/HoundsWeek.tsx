@@ -35,7 +35,6 @@ import { FormModal } from "../../components/FormModal";
 import { ApiConfigContext } from "../../contexts";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import Form from "../../forms/Form";
 
 const useStyles = makeStyles((theme: Theme) => ({
     sidebarHeader: {
@@ -82,7 +81,7 @@ interface WeekProps {
 function HoundsWeek(props: WeekProps) {
     const classes = useStyles();
     const history = useHistory();
-    const { apiConfig, setAuth } = React.useContext(ApiConfigContext);
+    const { apiConfig, updateApiAuth } = React.useContext(ApiConfigContext);
 
     // Tracks Events as an array of weeks filled with events
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
@@ -95,7 +94,7 @@ function HoundsWeek(props: WeekProps) {
             console.log(week);
         } catch (er) {
             console.error(er);
-            setAuth(null);
+            updateApiAuth(null, true);
             history.replace("/login");
         }
     };
@@ -152,8 +151,10 @@ function HoundsWeek(props: WeekProps) {
                         direction="row"
                     >
                         <Typography variant="h4" color="inherit">
-                            {/** TODO make cross week date correct */
-                            format(props.dates[0], "LLL Y")}
+                            {
+                                /** TODO make cross week date correct */
+                                format(props.dates[0], "LLL Y")
+                            }
                         </Typography>
                     </Grid>
                     <IconButton onClick={prevWeek} edge="end">

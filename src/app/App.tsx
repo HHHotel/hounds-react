@@ -16,8 +16,7 @@ import {
     SettingsContext,
     ApiConfigContext,
     loadApiConfig,
-    saveAuth,
-    storeAuth,
+    setAuth,
     loadSettings,
     setSettings,
 } from "./contexts";
@@ -34,25 +33,26 @@ import { getWeekArray } from "./routes/main/utils";
  * @return {React.ReactElement} el
  */
 export default function App() {
-    const [apiConf, setApiConf] = React.useState(loadApiConfig());
+    const [apiConfig, setApiConfig] = React.useState(loadApiConfig());
     const [settings, updateSettings] = React.useState(loadSettings());
     const [dates, setDates] = React.useState(getWeekArray(new Date()));
 
-    const setAuth = (auth: { username: string; token: string } | null) => {
-        storeAuth(auth);
-        setApiConf({
-            ...apiConf,
-            apiAuth: auth,
-        } as any); // TODO wrap api.IHoundsConfig (the type?) to allow auth null
-    };
     const saveSettings = (settings: HoundsSettings) => {
         setSettings(settings);
         updateSettings(settings);
     };
 
+    const updateApiAuth = (auth: api.IHoundAuth | null, remember?: boolean) => {
+        setAuth(auth, remember);
+        setApiConfig({
+            ...apiConfig,
+            apiAuth: auth,
+        } as any);
+    };
+
     React.useEffect(() => {
-        api.checkAuthentication(apiConf).then((valid) => {
-            setAuth(valid ? apiConf.apiAuth : null);
+        api.checkAuthentication(apiConfig).then((valid) => {
+            setAuth(valid ? apiConfig.apiAuth : null);
         });
     }, []);
 
@@ -63,18 +63,18 @@ export default function App() {
                 setSettings: saveSettings,
             }}
         >
-            <ApiConfigContext.Provider value={{ apiConfig: apiConf, setAuth }}>
+            <ApiConfigContext.Provider value={{ apiConfig, updateApiAuth }}>
                 <Router>
                     <Switch>
                         <Route path="/app/main">
-                            {apiConf.apiAuth ? (
+                            {apiConfig.apiAuth ? (
                                 <HoundsWeek dates={dates} setDates={setDates} />
                             ) : (
                                 <Redirect to={"/login"} />
                             )}
                         </Route>
                         <Route path="/login">
-                            {apiConf.apiAuth ? (
+                            {apiConfig.apiAuth ? (
                                 <Redirect to={"/app/main"} />
                             ) : (
                                 <HoundsLogin />

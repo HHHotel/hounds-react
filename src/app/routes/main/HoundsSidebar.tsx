@@ -1,7 +1,5 @@
 import React from "react";
-import {
-    makeStyles,
-} from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import {
     Menu,
     MenuItem,
@@ -14,17 +12,9 @@ import {
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
-import {
-    Person,
-    Settings,
-} from "@material-ui/icons";
-import {
-    Calendar,
-} from "@material-ui/pickers";
-import {
-    useHistory,
-    Link,
-} from "react-router-dom";
+import { Person, Settings } from "@material-ui/icons";
+import { Calendar } from "@material-ui/pickers";
+import { useHistory, Link } from "react-router-dom";
 
 import { HoundsSearch } from "../../components/HoundsSearch";
 import { ApiConfigContext } from "../../contexts";
@@ -51,8 +41,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface SidebarProps {
-    onDateChange?: (date: Date) => void
-    initDate?: Date
+    onDateChange?: (date: Date) => void;
+    initDate?: Date;
 }
 
 /**
@@ -61,14 +51,15 @@ interface SidebarProps {
  */
 function HoundsSidebar(props: SidebarProps) {
     // eslint-disable-next-line
-    const {apiConfig, setAuth} = React.useContext(ApiConfigContext);
+    const { apiConfig, updateApiAuth } = React.useContext(ApiConfigContext);
     const history = useHistory();
     const classes = useStyles();
     const [date, updateDate] = React.useState(props.initDate || new Date());
 
     const logout = () => {
+        updateApiAuth(null, true);
+        console.log(apiConfig);
         history.replace("/login");
-        setAuth(null);
     };
 
     const onDateChange = (udate: Date | null) => {
@@ -83,33 +74,35 @@ function HoundsSidebar(props: SidebarProps) {
         updateDate(udate);
     };
 
-    return <>
-        <Toolbar>
-            { /* TODO User Profiles */}
-            <ProfileMenu logout={logout} openProfile={() => { }} />
-            <Typography className={classes.avatarLabel} variant="h6">
-                {apiConfig.apiAuth.username}
-            </Typography>
-            <div className={classes.fullWidth} />
-            <Link to="/app/settings">
-                <IconButton edge="end" className={classes.settingsButton}>
-                    <Settings />
-                </IconButton>
-            </Link>
-        </Toolbar>
-        <Container className={classes.sidebarCalender}>
-            <Calendar
-                date={date}
-                onChange={onDateChange} />
-        </Container>
-        <Divider />
-        <HoundsSearch onSelect={(item: any) => {
-            if (!item.name) {
-                return;
-            }
-            history.push(`/app/profile/${item.id}`);
-        }}/>
-    </>;
+    return (
+        <>
+            <Toolbar>
+                {/* TODO User Profiles */}
+                <ProfileMenu logout={logout} openProfile={() => {}} />
+                <Typography className={classes.avatarLabel} variant="h6">
+                    {apiConfig.apiAuth.username}
+                </Typography>
+                <div className={classes.fullWidth} />
+                <Link to="/app/settings">
+                    <IconButton edge="end" className={classes.settingsButton}>
+                        <Settings />
+                    </IconButton>
+                </Link>
+            </Toolbar>
+            <Container className={classes.sidebarCalender}>
+                <Calendar date={date} onChange={onDateChange} />
+            </Container>
+            <Divider />
+            <HoundsSearch
+                onSelect={(item: any) => {
+                    if (!item.name) {
+                        return;
+                    }
+                    history.push(`/app/profile/${item.id}`);
+                }}
+            />
+        </>
+    );
 }
 
 // eslint-disable-next-line
@@ -146,7 +139,8 @@ function ProfileMenu({ logout, openProfile }: any) {
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}>
+                onClose={handleClose}
+            >
                 <MenuItem onClick={openProfileAndClose}>My Account</MenuItem>
                 <MenuItem onClick={logoutAndClose}>Logout</MenuItem>
             </Menu>

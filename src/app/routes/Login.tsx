@@ -24,7 +24,7 @@ import {
 } from "@material-ui/core";
 import { Settings, LockOutlined, Visibility } from "@material-ui/icons";
 import * as api from "@happyhoundhotel/hounds-ts";
-import { ApiConfigContext, SettingsContext, saveAuth } from "../contexts";
+import { ApiConfigContext, SettingsContext } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     paper: {
@@ -62,7 +62,7 @@ interface LoginProps {
 function HoundsLogin(props: LoginProps) {
     const classes = useStyles();
     const { settings } = React.useContext(SettingsContext);
-    const { setAuth } = React.useContext(ApiConfigContext);
+    const { updateApiAuth } = React.useContext(ApiConfigContext);
 
     const [user, setUser] = React.useState({} as any);
     const [loading, setLoading] = React.useState(false);
@@ -93,13 +93,7 @@ function HoundsLogin(props: LoginProps) {
                 settings.apiUrl
             );
 
-            console.log(user);
-
-            if (user.remember) {
-                saveAuth(auth);
-            }
-
-            return setAuth(auth);
+            return updateApiAuth(auth, user.remember);
         } catch (err) {
             setLoading(false);
             setFailed(true);

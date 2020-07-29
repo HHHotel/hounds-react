@@ -1,10 +1,6 @@
 import React from "react";
-import {
-    Link,
-} from "react-router-dom";
-import {
-    makeStyles,
-} from "@material-ui/styles";
+import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/styles";
 import {
     Container,
     CssBaseline,
@@ -26,13 +22,9 @@ import {
     FormControl,
     FormHelperText,
 } from "@material-ui/core";
-import {
-    Settings,
-    LockOutlined,
-    Visibility,
-} from "@material-ui/icons";
+import { Settings, LockOutlined, Visibility } from "@material-ui/icons";
 import * as api from "@happyhoundhotel/hounds-ts";
-import { ApiConfigContext, SettingsContext } from "../contexts";
+import { ApiConfigContext, SettingsContext, saveAuth } from "../contexts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     paper: {
@@ -55,12 +47,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export interface LoginInfo {
-    username: string,
-    password: string,
+    username: string;
+    password: string;
 }
 
 interface LoginProps {
-    onLogin?: (auth: LoginInfo, saveSettings?: boolean) => void
+    onLogin?: (auth: LoginInfo, saveSettings?: boolean) => void;
 }
 
 /**
@@ -98,8 +90,15 @@ function HoundsLogin(props: LoginProps) {
             const auth = await api.login(
                 user.username,
                 user.password,
-                settings.apiUrl,
+                settings.apiUrl
             );
+
+            console.log(user);
+
+            if (user.remember) {
+                saveAuth(auth);
+            }
+
             return setAuth(auth);
         } catch (err) {
             setLoading(false);
@@ -107,85 +106,91 @@ function HoundsLogin(props: LoginProps) {
         }
     };
 
-    return <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-                <LockOutlined />
-            </Avatar>
-            <Typography component="h1" variant="h5">
+    return (
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlined />
+                </Avatar>
+                <Typography component="h1" variant="h5">
                     Sign in
-            </Typography>
-            <form className={classes.form}
-                onSubmit={onSubmit}
-                noValidate>
-                <TextField onChange={updateUsername}
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="hounds-username"
-                    autoFocus
-                    error={loginFailed}
-                />
-                <FormControl required variant="outlined" fullWidth >
-                    <InputLabel>Password</InputLabel>
-                    <OutlinedInput onChange={updatePassword}
-                        name="password"
-                        label = "Password"
-                        type={passHidden ? "password" : "text"}
+                </Typography>
+                <form className={classes.form} onSubmit={onSubmit} noValidate>
+                    <TextField
+                        onChange={updateUsername}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="hounds-username"
+                        autoFocus
                         error={loginFailed}
-                        id="password"
-                        autoComplete="current-password"
-                        endAdornment = {
-                            <InputAdornment position="end">
-                                <IconButton onMouseDown={showPass}
-                                    onMouseUp={hidePass}>
-                                    <Visibility />
-                                </IconButton>
-                            </InputAdornment>
-                        }
                     />
-                    <FormHelperText error={loginFailed}>
-                        {loginFailed && "Login Failed"}
-                    </FormHelperText>
-                </FormControl>
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={updateRemberMe}
-                            value="remember" color="primary"
+                    <FormControl required variant="outlined" fullWidth>
+                        <InputLabel>Password</InputLabel>
+                        <OutlinedInput
+                            onChange={updatePassword}
+                            name="password"
+                            label="Password"
+                            type={passHidden ? "password" : "text"}
+                            error={loginFailed}
+                            id="password"
+                            autoComplete="current-password"
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onMouseDown={showPass}
+                                        onMouseUp={hidePass}
+                                    >
+                                        <Visibility />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
                         />
-                    }
-                    label="Remember me"/>
-                <Button type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}>
-                    { !loading && "Sign In" }
-                    { loading && <CircularProgress color="inherit" /> }
-                </Button>
-                <Grid container
-                    alignItems="center">
-                    <Grid item>
-                        <Anchor href="#">
-                            Forgot password?
-                        </Anchor>
-                    </Grid>
+                        <FormHelperText error={loginFailed}>
+                            {loginFailed && "Login Failed"}
+                        </FormHelperText>
+                    </FormControl>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                onChange={updateRemberMe}
+                                value="remember"
+                                color="primary"
+                            />
+                        }
+                        label="Remember me"
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        {!loading && "Sign In"}
+                        {loading && <CircularProgress color="inherit" />}
+                    </Button>
+                    <Grid container alignItems="center">
+                        <Grid item>
+                            <Anchor href="#">Forgot password?</Anchor>
+                        </Grid>
 
-                    <Grid item>
-                        <Link to="/app/settings">
-                            <IconButton>
-                                <Settings />
-                            </IconButton>
-                        </Link>
+                        <Grid item>
+                            <Link to="/app/settings">
+                                <IconButton>
+                                    <Settings />
+                                </IconButton>
+                            </Link>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </form>
-        </div>
-    </Container>;
+                </form>
+            </div>
+        </Container>
+    );
 }
 export default HoundsLogin;

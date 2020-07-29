@@ -17,6 +17,7 @@ import {
     ApiConfigContext,
     loadApiConfig,
     saveAuth,
+    storeAuth,
     loadSettings,
     setSettings,
 } from "./contexts";
@@ -38,11 +39,11 @@ export default function App() {
     const [dates, setDates] = React.useState(getWeekArray(new Date()));
 
     const setAuth = (auth: { username: string; token: string } | null) => {
-        saveAuth(auth);
+        storeAuth(auth);
         setApiConf({
             ...apiConf,
             apiAuth: auth,
-        } as any); // TODO wrap api.IHoundsConfig to allow auth null
+        } as any); // TODO wrap api.IHoundsConfig (the type?) to allow auth null
     };
     const saveSettings = (settings: HoundsSettings) => {
         setSettings(settings);

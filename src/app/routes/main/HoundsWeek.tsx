@@ -94,8 +94,11 @@ function HoundsWeek(props: WeekProps) {
             console.log(week);
         } catch (er) {
             console.error(er);
-            updateApiAuth(null, true);
-            history.replace("/login");
+
+            if (er.response.status === 401) {
+                updateApiAuth(null, true);
+                history.replace("/login");
+            }
         }
     };
     const goToWeek = (d: Date) => props.setDates(getWeekArray(d));

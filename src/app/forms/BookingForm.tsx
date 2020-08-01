@@ -6,15 +6,15 @@ import {
 } from "date-fns";
 
 import * as api from "@happyhoundhotel/hounds-ts";
-import {HoundsSearch} from "../components/HoundsSearch";
-import {ApiConfigContext} from "../contexts";
+import { HoundsSearch } from "../components/HoundsSearch";
+import { ApiConfigContext } from "../contexts";
 import DogEventForm from "./DogEventForm";
 import RepeatEventForm from "./RepeatEventForm";
 // eslint-disable-next-line
 import {RepeatOpts} from "./RepeatEventForm";
 
 interface BookingFormProps {
-    onSubmit: () => void
+    onSubmit?: (booking: api.IHoundBooking) => void
 }
 
 /**
@@ -24,7 +24,7 @@ interface BookingFormProps {
 function BookingForm(props: BookingFormProps) {
     const [formIndex, setFormIndex] = React.useState(0);
     const [booking, setBooking] = React.useState({} as api.IHoundEvent);
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const { apiConfig } = React.useContext(ApiConfigContext);
 
     const onSelectDog = (dog: api.IHoundDog | api.IHoundEvent) => {
         dog = dog as api.IHoundDog;
@@ -41,6 +41,12 @@ function BookingForm(props: BookingFormProps) {
     };
 
     const onSubmitBooking = (ev: api.IHoundEvent, repeat: boolean) => {
+        const newBooking = {
+            dogId: booking.id,
+            ...booking,
+            ...ev,
+        };
+
         if (differenceInMilliseconds(ev.endDate, ev.startDate) < 0) {
             // TODO popup toast w/ error
             return;
@@ -51,22 +57,15 @@ function BookingForm(props: BookingFormProps) {
             return;
         }
         if (!repeat) { // one event just call the api and exit
-            api.addEvent({
-                ...booking,
-                ...ev,
-            }, apiConfig);
-            console.log({
-                ...booking,
-                ...ev,
-            });
-            props.onSubmit();
+            if (props.onSubmit) {
+                props.onSubmit(newBooking);
+            } else {
+                api.addEvent(newBooking, apiConfig);
+            }
             return;
         }
 
-        setBooking({
-            ...booking,
-            ...ev,
-        });
+        setBooking(newBooking);
         setFormIndex(2);
     };
 
@@ -84,8 +83,6 @@ function BookingForm(props: BookingFormProps) {
                 endDate: opts.incFunc(ev.endDate),
             };
         }
-
-        props.onSubmit();
         console.log(opts);
         console.log(evlist);
     };

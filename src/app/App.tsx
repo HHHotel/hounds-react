@@ -5,9 +5,6 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 
 import "./App.css";
 
@@ -19,7 +16,7 @@ import {
     SettingsContext,
     ApiConfigContext,
     loadApiConfig,
-    saveAuth,
+    setAuth,
     loadSettings,
     setSettings,
 } from "./contexts";
@@ -29,94 +26,72 @@ import HoundsLogin from "./routes/Login";
 import HoundsWeek from "./routes/main/HoundsWeek";
 import HoundsSettingsPage from "./routes/HoundsSettings";
 import DogProfile from "./routes/profile/Profile";
-
-const theme = createMuiTheme();
+import { getWeekArray } from "./routes/main/utils";
 
 /**
  * Entrypoint for the application
  * @return {React.ReactElement} el
  */
 export default function App() {
-    const [apiConf, setApiConf] = React.useState(loadApiConfig());
+    const [apiConfig, setApiConfig] = React.useState(loadApiConfig());
     const [settings, updateSettings] = React.useState(loadSettings());
+    const [dates, setDates] = React.useState(getWeekArray(new Date()));
 
-    const setAuth = (auth: {username: string, token: string} | null) => {
-        saveAuth(auth);
-        setApiConf({
-            ...apiConf,
-            apiAuth: auth,
-        } as any); // TODO wrap api.IHoundsConfig to allow auth null
-    };
     const saveSettings = (settings: HoundsSettings) => {
         setSettings(settings);
         updateSettings(settings);
     };
 
+    const updateApiAuth = (auth: api.IHoundAuth | null, remember?: boolean) => {
+        setAuth(auth, remember);
+        setApiConfig({
+            ...apiConfig,
+            apiAuth: auth,
+        } as any);
+    };
+
     React.useEffect(() => {
-        api.checkAuthentication(apiConf).then((valid) => {
-            setAuth(valid ? apiConf.apiAuth : null);
+        api.checkAuthentication(apiConfig).then((valid) => {
+            setAuth(valid ? apiConfig.apiAuth : null);
         });
     }, []);
 
-    return <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Router>
-            <ThemeProvider theme={theme}>
-                <SettingsContext.Provider value={{
-                    settings,
-                    setSettings: saveSettings,
-                }}>
-                    <ApiConfigContext.Provider
-                        value={{apiConfig: apiConf, setAuth}}>
-                        <Switch>
-                            <PrivateRoute path="/app/main">
-                                <HoundsWeek />
-                            </PrivateRoute>
-                            <Route path="/app/settings">
-                                <HoundsSettingsPage />
-                            </Route>
-                            <Route path="/app/profile/:dogId">
-                                <DogProfile />
-                            </Route>
-                            <Route path="/login">
-                                {apiConf.apiAuth ?
-                                    <Redirect to={"/app/main"} /> :
-                                    <HoundsLogin />}
-                            </Route>
-                            <Route path="*">
-                                <Redirect to="/app/main" />
-                            </Route>
-                        </Switch>
-                    </ApiConfigContext.Provider>
-                </SettingsContext.Provider>
-            </ThemeProvider>
-        </Router>
-    </MuiPickersUtilsProvider>;
-}
-
-/**
- * A wrapper for <Route> that redirects to the login
- * screen if you're not yet authenticated.
- * @param {any} props properties
- * @return {React.ReactElement} el
- */
-function PrivateRoute({children, ...rest}: any) {
-    const {apiConfig} = React.useContext(ApiConfigContext);
     return (
-        <Route
-            {...rest}
-            render={({location}: any) =>
-                apiConfig.apiAuth ?
-                    (
-                        children
-                    ) : (
-                        <Redirect
-                            to={{
-                                pathname: "/login",
-                                state: {from: location},
-                            }}
-                        />
-                    )
-            }
-        />
+        <SettingsContext.Provider
+            value={{
+                settings,
+                setSettings: saveSettings,
+            }}
+        >
+            <ApiConfigContext.Provider value={{ apiConfig, updateApiAuth }}>
+                <Router>
+                    <Switch>
+                        <Route path="/app/main">
+                            {apiConfig.apiAuth ? (
+                                <HoundsWeek dates={dates} setDates={setDates} />
+                            ) : (
+                                <Redirect to={"/login"} />
+                            )}
+                        </Route>
+                        <Route path="/login">
+                            {apiConfig.apiAuth ? (
+                                <Redirect to={"/app/main"} />
+                            ) : (
+                                <HoundsLogin />
+                            )}
+                        </Route>
+                        <Route path="/app/settings">
+                            <HoundsSettingsPage />
+                        </Route>
+                        <Route path="/app/profile/:dogId">
+                            <DogProfile />
+                        </Route>
+                        <Route path="*">
+                            <Redirect to="/app/main" />
+                        </Route>
+                    </Switch>
+                </Router>
+            </ApiConfigContext.Provider>
+        </SettingsContext.Provider>
     );
 }

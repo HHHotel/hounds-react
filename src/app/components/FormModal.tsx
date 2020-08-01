@@ -1,7 +1,5 @@
 import React from "react";
-import {
-    makeStyles,
-} from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import {
     Typography,
     IconButton,
@@ -10,9 +8,7 @@ import {
     // eslint-disable-next-line
     Theme,
 } from "@material-ui/core";
-import {
-    Close,
-} from "@material-ui/icons";
+import { Close } from "@material-ui/icons";
 import Draggable from "react-draggable";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,18 +34,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface FormModalProps {
-    children: React.ReactElement
-    open: boolean
-    disableDrag?: boolean
-    onClose?: (event: React.MouseEvent) => void
-    title?: string
+    open: boolean;
+    disableDrag?: boolean;
+    onClose?: (event: React.MouseEvent) => void;
+    title?: string;
 }
 
 /**
  * @param {FormModalProps} props element props
  * @return {React.ReactElement} element
  */
-export function FormModal(props: FormModalProps) {
+export function FormModal(props: React.PropsWithChildren<FormModalProps>) {
     const classes = useStyles();
 
     const closeModal = (ev: React.MouseEvent) => {
@@ -62,23 +57,21 @@ export function FormModal(props: FormModalProps) {
         return null;
     }
 
-    return <Draggable disabled={props.disableDrag} bounds="parent">
-        <Paper className={classes.modalContainer}
-            elevation={8}>
-            <Grid container>
-                <Grid container
-                    justify="space-between">
-                    <Typography variant="h5">
-                        { props.title || "" }
-                    </Typography>
-                    <IconButton onClick={closeModal}>
-                        <Close />
-                    </IconButton>
+    return (
+        <Draggable disabled={props.disableDrag} bounds="parent">
+            <Paper className={classes.modalContainer} elevation={8}>
+                <Grid container>
+                    <Grid container justify="space-between">
+                        <Typography variant="h5">
+                            {props.title || ""}
+                        </Typography>
+                        <IconButton onClick={closeModal}>
+                            <Close />
+                        </IconButton>
+                    </Grid>
+                    <>{props.children}</>
                 </Grid>
-                <>
-                    { props.children }
-                </>
-            </Grid>
-        </Paper>
-    </Draggable>;
+            </Paper>
+        </Draggable>
+    );
 }

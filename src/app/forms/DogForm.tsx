@@ -1,24 +1,9 @@
 import React from "react";
-import {
-    makeStyles,
-} from "@material-ui/styles";
-
-import {
-    // eslint-disable-next-line
-    FormEvent,
-} from "react";
-
-import {
-    Button,
-    TextField,
-    // eslint-disable-next-line
-    Theme,
-} from "@material-ui/core";
-
-// eslint-disable-next-line
+import { makeStyles } from "@material-ui/styles";
+import { Button, Theme } from "@material-ui/core";
 import * as api from "@happyhoundhotel/hounds-ts";
-
-import {ApiConfigContext} from "../contexts";
+import { ApiConfigContext } from "../contexts";
+import { TextInput } from "./FormInputs";
 
 const useStyles = makeStyles((theme: Theme) => ({
     formWrapper: {
@@ -31,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface DogFormProps {
-    onSubmit: () => void
+    onSubmit?: (dog: api.IHoundDog) => void;
 }
 
 /**
@@ -40,56 +25,51 @@ interface DogFormProps {
  * */
 function DogForm(props: DogFormProps) {
     const classes = useStyles();
+    const { apiConfig } = React.useContext(ApiConfigContext);
 
-    const [dogName, setDogName] = React.useState("");
-    const [clientName, setClientName] = React.useState("");
-    const {apiConfig} = React.useContext(ApiConfigContext);
+    const nameBind = React.useState("");
+    const clientNameBind = React.useState("");
+    const dogName = nameBind[0];
+    const clientName = clientNameBind[0];
 
-    const onSubmit = (event: FormEvent) => {
+    const clearForm = () => {
+        nameBind[1]("");
+        clientNameBind[1]("");
+    };
+
+    const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-
-        api.addDog({
+        const dog = {
             activeClient: true,
             id: "",
             name: dogName,
             clientName: clientName,
             bookings: [],
-        }, apiConfig);
-
-        setDogName("");
-        setClientName("");
-        props.onSubmit();
+        };
+        clearForm();
+        // TODO check that the name is not already taken
+        props.onSubmit ? props.onSubmit(dog) : api.addDog(dog, apiConfig);
     };
 
-    return <form onSubmit={onSubmit}
-        className={classes.formWrapper}>
-        <TextField variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="dogName"
-            label="Dog name"
-            name="name"
-            autoFocus
-            value={dogName}
-            onChange={(ev) => setDogName(ev.target.value)}
-        />
-        <TextField variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="clientName"
-            label="Client Name"
-            name="clientName"
-            autoFocus
-            value={clientName}
-            onChange={(ev) => setClientName(ev.target.value)}
-        />
-        <Button variant="contained"
-            type="submit">
-            Submit
-        </Button>
-    </form>;
+    return (
+        <form onSubmit={onSubmit} className={classes.formWrapper}>
+            <TextInput
+                required
+                label="Dog name"
+                name="dogName"
+                bind={nameBind}
+            />
+            <TextInput
+                required
+                label="Client Name"
+                name="clientName"
+                bind={clientNameBind}
+            />
+            <Button variant="contained" type="submit">
+                Submit
+            </Button>
+        </form>
+    );
 }
 
 export default DogForm;

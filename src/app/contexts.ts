@@ -3,18 +3,18 @@ import React from "react";
 import * as api from "@happyhoundhotel/hounds-ts";
 
 export interface HoundsSettings {
-    apiUrl: string,
+    apiUrl: string;
     hours: {
         opening: {
-            am: number,
-            pm: number,
-        },
+            am: number;
+            pm: number;
+        };
         closing: {
-            am: number,
-            pm: number,
-        }
-    },
-    eventTimeStep: number,
+            am: number;
+            pm: number;
+        };
+    };
+    eventTimeStep: number;
 }
 
 const SETTINGS_KEY = "HOUNDS_WEB_SETTINGS";
@@ -23,8 +23,8 @@ export const loadSettings = (): HoundsSettings => {
     const defaultSettings = {
         apiUrl: `${window.location.protocol}//${window.location.host}`,
         hours: {
-            opening: {am: 8, pm: 16},
-            closing: {am: 10, pm: 18},
+            opening: { am: 8, pm: 16 },
+            closing: { am: 10, pm: 18 },
             eventTimeStep: 5,
         },
     };
@@ -38,10 +38,17 @@ export const setSettings = (usettings: HoundsSettings) => {
 };
 
 const AUTH_KEY = "HOUNDS_AUTH";
-// Loads settings from localStorage
+/** Loads settings from localStorage first,
+ *  if it does not exist uses the sessionStorage
+ * @returns {api.IHoundsConfig} config used to query the api
+ * */
 export const loadApiConfig = (): api.IHoundsConfig => {
     const settings = loadSettings();
-    const stored = localStorage.getItem(AUTH_KEY);
+
+    const stored = JSON.parse(localStorage.getItem(AUTH_KEY) || "null")
+        ? localStorage.getItem(AUTH_KEY)
+        : sessionStorage.getItem(AUTH_KEY);
+
     const auth = stored ? JSON.parse(stored) : null;
     return {
         apiURL: settings.apiUrl,
@@ -50,14 +57,32 @@ export const loadApiConfig = (): api.IHoundsConfig => {
     };
 };
 
-export const saveAuth = (auth: {username: string, token: string} | null) => {
-    localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+export const clearAuth = () => {
+    sessionStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(AUTH_KEY);
+};
+
+/**
+ * Saves the authentication details either to local or session storage
+ * @param auth authentication details for the api
+ * @param remember whether or not to store across sessions
+ * @returns nothing
+ */
+export const setAuth = (
+    auth: { username: string; token: string } | null,
+    remember?: boolean
+) => {
+    if (remember) {
+        localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+    }
+    sessionStorage.setItem(AUTH_KEY, JSON.stringify(auth));
 };
 
 export const ApiConfigContext = React.createContext({
     apiConfig: loadApiConfig(),
-    setAuth: saveAuth,
+    updateApiAuth: setAuth,
 });
+
 export const SettingsContext = React.createContext({
     settings: loadSettings(),
     setSettings,

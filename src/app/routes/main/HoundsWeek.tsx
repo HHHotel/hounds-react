@@ -1,10 +1,6 @@
 import React from "react";
-import {
-    useHistory,
-} from "react-router-dom";
-import {
-    makeStyles,
-} from "@material-ui/styles";
+import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/styles";
 import {
     Fab,
     AppBar,
@@ -26,15 +22,17 @@ import {
     ArrowRight,
     Home,
 } from "@material-ui/icons";
-import {addDays, eachDayOfInterval, format} from "date-fns";
+import { addDays, format } from "date-fns";
 
-import HoundsList from "./houndslist/HoundsList";
+import { getWeekArray } from "./utils";
+
+import HoundsList from "./HoundsList";
 import HoundsSidebar from "./HoundsSidebar";
 import DogForm from "../../forms/DogForm";
 import EventForm from "../../forms/EventForm";
 import BookingForm from "../../forms/BookingForm";
-import {FormModal} from "../../components/FormModal";
-import {ApiConfigContext} from "../../contexts";
+import { FormModal } from "../../components/FormModal";
+import { ApiConfigContext } from "../../contexts";
 
 import * as api from "@happyhoundhotel/hounds-ts";
 
@@ -53,25 +51,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-/**
- * Gets an array of dates Mon-Friday for the week
- * containing the date d given
- * @param {Date} d date inside the week to obtain
- * @return {Date[]} array containing dates in week
- */
-function getWeekArray(d: Date): Date[] {
-    const day = d.getDay();
-    // Monday is first day of week in this
-    const distFromMon = (day === 0 ? 7 : day) - 1;
-    const d0 = addDays(d, distFromMon * -1);
-    const d6 = addDays(d0, 7);
-    return eachDayOfInterval({
-        start: d0,
-        end: d6,
-    });
-}
+const FORM_METADATA = {
+    booking: {
+        title: "New Booking",
+        type: "booking",
+        open: false,
+    },
+    dog: {
+        title: "New Dog",
+        type: "dog",
+        open: false,
+    },
+    event: {
+        title: "New Event",
+        type: "event",
+        open: false,
+    },
+};
 
 interface WeekProps {
+    dates: Date[];
+    setDates: (d: Date[]) => void;
 }
 
 /**
@@ -81,140 +81,128 @@ interface WeekProps {
 function HoundsWeek(props: WeekProps) {
     const classes = useStyles();
     const history = useHistory();
-    const {apiConfig, setAuth} = React.useContext(ApiConfigContext);
-    const [dates, updateDates] = React.useState(getWeekArray(new Date()));
+    const { apiConfig, updateApiAuth } = React.useContext(ApiConfigContext);
+
+    // Tracks Events as an array of weeks filled with events
     const [week, updateWeek] = React.useState([] as api.IScheduleEvent[][]);
-    const getWeek = async (d0: Date) => {
+    const getWeek = async () => {
         try {
+            const d0 = props.dates[0];
             const week = await api.getWeek(d0, apiConfig);
             updateWeek(week);
             console.log("Loaded week", d0.toDateString());
+            console.log(week);
         } catch (er) {
             console.error(er);
-            setAuth(null);
-            history.replace("/login");
+
+            if (er.response.status === 401) {
+                updateApiAuth(null, true);
+                history.replace("/login");
+            }
         }
     };
-    const goToWeek = (d: Date) => {
-        const dArr = getWeekArray(d);
-        updateDates(dArr);
-        setDrawer(false);
-        getWeek(dArr[0]);
-    };
-
+    const goToWeek = (d: Date) => props.setDates(getWeekArray(d));
+    const nextWeek = () => goToWeek(addDays(props.dates[0], 7));
+    const prevWeek = () => goToWeek(addDays(props.dates[0], -7));
     React.useEffect(() => {
-        goToWeek(new Date());
-    }, []);
+        // Load week from api on render
+        getWeek();
+    }, [props.dates]);
 
+    // Drawer state
     const [drawerOpen, setDrawer] = React.useState(false);
     const toggleDrawer = () => setDrawer(!drawerOpen);
 
-    const FORM_METADATA = {
-        "booking": {
-            title: "New Booking",
-            type: "booking",
-            open: false,
-        },
-        "dog": {
-            title: "New Dog",
-            type: "dog",
-            open: false,
-        },
-        "event": {
-            title: "New Event",
-            type: "event",
-            open: false,
-        },
-    };
+    // Modal state relies on object with form defaults
     const [modalForm, setModalForm] = React.useState(FORM_METADATA["booking"]);
-    const modalFormClose = () => setModalForm({
-        ...modalForm,
-        open: false,
-    });
+    const modalFormClose = () => setModalForm({ ...modalForm, open: false });
     const modalFormOpen = (type?: "booking" | "dog" | "event") => {
-        if (type) {
-            setModalForm({...FORM_METADATA[type], open: true});
-        } else {
-            setModalForm({...modalForm, open: true});
-        }
+        const data = type ? FORM_METADATA[type] : modalForm;
+        setModalForm({ ...data, open: true });
     };
 
-    let mainview;
-    if (week.length > 0) {
-        mainview = <HoundsList className={classes.weekContainer}
-            dates={dates} weekList={week}/>;
-    } else {
-        mainview = <Grid container justify="center">
+    // Use loading circle when week has not loaded in
+    const mainview = (week.length > 0 && (
+        <HoundsList
+            className={classes.weekContainer}
+            dates={props.dates}
+            weekList={week}
+        />
+    )) || (
+        <Grid container justify="center">
             <CircularProgress />
-        </Grid>;
-    }
+        </Grid>
+    );
 
-    return <>
-        <Drawer open={drawerOpen} onClose={toggleDrawer} anchor="left">
-            <HoundsSidebar initDate={dates[0]} onDateChange={goToWeek} />
-        </Drawer>
-        <AppBar position="sticky" color="default">
-            <Toolbar>
-                <IconButton onClick={() => toggleDrawer()} edge="start">
-                    <MenuIcon />
-                </IconButton>
-                <Grid container
-                    alignContent="center"
-                    justify="center"
-                    direction="row">
-                    <Typography variant="h4"
-                        color="inherit">
-                        { format(dates[0], "LLL Y") }
-                    </Typography>
-                </Grid>
-                <IconButton onClick={() => goToWeek(addDays(dates[0], -7))}
-                    edge="end">
-                    <ArrowLeft />
-                </IconButton>
-                <IconButton onClick={() => {
-                    goToWeek(new Date());
-                }}
-                edge="end">
-                    <Home />
-                </IconButton>
-                <IconButton onClick={() => goToWeek(addDays(dates[0], 7))}
-                    edge="end">
-                    <ArrowRight />
-                </IconButton>
-            </Toolbar>
-        </AppBar>
-        {mainview}
-
-        <AddMenu openModal={modalFormOpen}/>
-        <FormModals />
-    </>;
-
-    // eslint-disable-next-line
-    function FormModals() {
-        const GetTypedModal = () => {
-            switch (modalForm.type) {
-            case "booking":
-                return <BookingForm onSubmit={modalFormClose}/>;
-            case "dog":
-                return <DogForm onSubmit={modalFormClose}/>;
-            case "event":
-                return <EventForm onSubmit={modalFormClose}/>;
-            default:
-                return null;
-            }
-        };
-        return <FormModal disableDrag={true}
-            open={modalForm.open}
-            onClose={modalFormClose}
-            title={modalForm.title}>
-            <GetTypedModal />
-        </FormModal>;
-    }
+    return (
+        <>
+            <Drawer open={drawerOpen} onClose={toggleDrawer} anchor="left">
+                <HoundsSidebar
+                    initDate={props.dates[0]}
+                    onDateChange={goToWeek}
+                />
+            </Drawer>
+            <AppBar position="sticky" color="default">
+                <Toolbar>
+                    <IconButton onClick={() => toggleDrawer()} edge="start">
+                        <MenuIcon />
+                    </IconButton>
+                    <Grid
+                        container
+                        alignContent="center"
+                        justify="center"
+                        direction="row"
+                    >
+                        <Typography variant="h4" color="inherit">
+                            {
+                                /** TODO make cross week date correct */
+                                format(props.dates[0], "LLL Y")
+                            }
+                        </Typography>
+                    </Grid>
+                    <IconButton onClick={prevWeek} edge="end">
+                        <ArrowLeft />
+                    </IconButton>
+                    <IconButton onClick={() => goToWeek(new Date())} edge="end">
+                        <Home />
+                    </IconButton>
+                    <IconButton onClick={nextWeek} edge="end">
+                        <ArrowRight />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+            {mainview}
+            <AddMenu openModal={modalFormOpen} />
+            <FormModal
+                disableDrag={true}
+                open={modalForm.open}
+                onClose={modalFormClose}
+                title={modalForm.title}
+            >
+                {(function getTypedForm() {
+                    switch (modalForm.type) {
+                        case "booking":
+                            return <BookingForm />;
+                        case "dog":
+                            return <DogForm />;
+                        case "event":
+                            return <EventForm />;
+                        default:
+                            return <></>;
+                    }
+                })()}
+            </FormModal>
+        </>
+    );
 }
 export default HoundsWeek;
 
+interface AddMenuProps {
+    openModal: (type?: "booking" | "dog" | "event") => void;
+}
+
 // eslint-disable-next-line
-function AddMenu({openModal}: any) {
+function AddMenu({ openModal }: AddMenuProps) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -226,20 +214,28 @@ function AddMenu({openModal}: any) {
         setAnchorEl(null);
     };
 
-    return <div>
-        <Fab color="primary" className={classes.addFab}
-            onClick={handleClick}>
-            <Add />
-        </Fab>
-        <Menu anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClick={handleClose}
-            onClose={handleClose}>
-            <MenuItem onClick={() => openModal("booking")}>Booking</MenuItem>
-            <MenuItem onClick={() => openModal("event")}>Event</MenuItem>
-            <MenuItem onClick={() => openModal("dog")}>Dog</MenuItem>
-        </Menu>
-    </div>;
+    return (
+        <div>
+            <Fab
+                color="primary"
+                className={classes.addFab}
+                onClick={handleClick}
+            >
+                <Add />
+            </Fab>
+            <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClick={handleClose}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={() => openModal("booking")}>
+                    Booking
+                </MenuItem>
+                <MenuItem onClick={() => openModal("event")}>Event</MenuItem>
+                <MenuItem onClick={() => openModal("dog")}>Dog</MenuItem>
+            </Menu>
+        </div>
+    );
 }
-
